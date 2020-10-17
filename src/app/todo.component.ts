@@ -38,7 +38,6 @@ import { Todo } from './todo-state';
       />
     </article>
   `,
-  styles: [``],
   providers: [RxState],
 })
 export class TodoComponent {
@@ -68,7 +67,7 @@ export class TodoComponent {
     });
   }
 
-  destroy() {
+  destroy(): void {
     this.remove.emit(this.todo);
   }
 

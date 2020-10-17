@@ -295,7 +295,7 @@ body {
 }
 
 .filters {
-	margin: 0;
+	margin: -2px;
 	padding: 0;
 	list-style: none;
 	position: absolute;
@@ -307,21 +307,21 @@ body {
 	display: inline;
 }
 
-.filters li a {
-	color: inherit;
-	margin: 3px;
-	padding: 3px 7px;
+.filters li button {
+  color: inherit;
+  padding: 3px 4px;
+	margin: 0 4px;
 	text-decoration: none;
 	border: 1px solid transparent;
 	border-radius: 3px;
 }
 
-.filters li a:hover {
-	border-color: rgba(175, 47, 47, 0.1);
+.filters li button:hover {
+	border-color: rgba(75, 47, 175, 0.2)
 }
 
-.filters li a.selected {
-	border-color: rgba(175, 47, 47, 0.2);
+.filters li button.selected {
+	border-color: rgba(75, 47, 175, 0.5);
 }
 
 .clear-completed,

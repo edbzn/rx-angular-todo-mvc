@@ -1,7 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RxState } from '@rx-angular/state';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { map, withLatestFrom } from 'rxjs/operators';
 import { TodoState } from './todo-state';
+
+type TodoFilter = 'all' | 'completed' | 'active';
 
 @Component({
   selector: 'app-todo-list',
@@ -18,7 +21,7 @@ import { TodoState } from './todo-state';
         (keyup)="add($event)"
       />
     </header>
-    <section *rxLet="todos$; let todos" class="main">
+    <section *rxLet="filteredTodos$; let todos" class="main">
       <input id="toggle-all" class="toggle-all" type="checkbox" />
       <label for="toggle-all">Mark all as complete</label>
       <app-todo
@@ -32,17 +35,32 @@ import { TodoState } from './todo-state';
     </section>
     <footer class="footer">
       <span class="todo-count" *rxLet="active$; let active">
-        <strong>{{ active }}</strong> item left
+        <strong>{{ active.length }}</strong> item left
       </span>
       <ul class="filters">
-        <li *rxLet="all$; let all">
-          <a href="#/all">{{ all }} All</a>
+        <li *rxLet="todos$; let all">
+          <button
+            [class.selected]="filter$.value === 'all'"
+            (click)="filter$.next('all')"
+          >
+            {{ all.length }} All
+          </button>
         </li>
         <li *rxLet="active$; let active">
-          <a href="#/active">{{ active }} Active</a>
+          <button
+            [class.selected]="filter$.value === 'active'"
+            (click)="filter$.next('active')"
+          >
+            {{ active.length }} Active
+          </button>
         </li>
         <li *rxLet="completed$; let completed">
-          <a href="#/completed">{{ completed }} Completed</a>
+          <button
+            [class.selected]="filter$.value === 'completed'"
+            (click)="filter$.next('completed')"
+          >
+            {{ completed.length }} Completed
+          </button>
         </li>
       </ul>
       <button class="clear-completed" (click)="clearCompleted()">
@@ -62,16 +80,26 @@ import { TodoState } from './todo-state';
 export class TodoListComponent implements OnInit {
   @ViewChild('input', { static: false }) input: ElementRef<HTMLInputElement>;
 
+  readonly filter$ = new BehaviorSubject<TodoFilter>('all');
+
   readonly todos$ = this.state.select('todos');
 
-  readonly all$ = this.todos$.pipe(map((todos) => todos.length));
+  readonly filteredTodos$ = combineLatest([this.todos$, this.filter$]).pipe(
+    map(([todos, filter]) =>
+      todos.filter(({ done }) => {
+        if (filter === 'all') return true;
+        if (filter === 'active') return !done;
+        if (filter === 'completed') return done;
+      })
+    )
+  );
 
   readonly completed$ = this.todos$.pipe(
-    map((todos) => todos.filter((todo) => todo.done).length)
+    map((todos) => todos.filter((todo) => todo.done))
   );
 
   readonly active$ = this.todos$.pipe(
-    map((todos) => todos.filter((todo) => !todo.done).length)
+    map((todos) => todos.filter((todo) => !todo.done))
   );
 
   constructor(private readonly state: RxState<TodoState>) {}
@@ -94,7 +122,7 @@ export class TodoListComponent implements OnInit {
           ...todos,
         ],
       }));
-      this.input.nativeElement.value = ''
+      this.input.nativeElement.value = '';
     }
   }
 
@@ -116,7 +144,7 @@ export class TodoListComponent implements OnInit {
     }));
   }
 
-  clearCompleted() {
+  clearCompleted(): void {
     this.state.set(({ todos }) => ({
       todos: todos.filter((todo) => !todo.done),
     }));

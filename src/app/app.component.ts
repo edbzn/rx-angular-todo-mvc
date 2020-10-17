@@ -10,8 +10,7 @@ import { Component } from '@angular/core';
         <a
           href="https://github.com/rx-angular/rx-angular/blob/master/libs/state/README.md"
         >
-          @rx-angular/state
-        </a>
+          @rx-angular/state</a>
       </code>
       to manage state and
       <code>
