@@ -33,7 +33,7 @@ import { Todo } from './todo-state';
         class="edit"
         *ngIf="isEditing"
         [value]="todo.text"
-        (blur)="validate()"
+        (blur)="updateText()"
         (keyup)="onEnter($event)"
       />
     </article>
@@ -46,9 +46,9 @@ export class TodoComponent {
 
   @Input() readonly todo: Todo;
 
-  @Output() done = new EventEmitter<boolean>();
-  @Output() textUpdate = new EventEmitter<string>();
-  @Output() remove = new EventEmitter<Todo>();
+  @Output() done = new EventEmitter<{ id: number; done: boolean }>();
+  @Output() textUpdate = new EventEmitter<{ id: number; text: string }>();
+  @Output() remove = new EventEmitter<{ id: number }>();
 
   readonly isEditing$ = this.state.select('isEditing');
 
@@ -57,7 +57,10 @@ export class TodoComponent {
   }
 
   toggleDone(): void {
-    this.done.emit(this.toggle.nativeElement.checked);
+    this.done.emit({
+      id: this.todo.id,
+      done: this.toggle.nativeElement.checked,
+    });
   }
 
   edit(): void {
@@ -71,15 +74,15 @@ export class TodoComponent {
     this.remove.emit(this.todo);
   }
 
-  validate(): void {
+  updateText(): void {
     const { value } = this.input.nativeElement;
-    this.textUpdate.emit(value);
+    this.textUpdate.emit({ id: this.todo.id, text: value });
     this.state.set({ isEditing: false });
   }
 
   onEnter(event: KeyboardEvent): void {
     if (event && event.keyCode === 13) {
-      this.validate();
+      this.updateText();
     }
   }
 }
