@@ -129,7 +129,8 @@ body {
 .toggle-all + label {
 	width: 60px;
 	height: 34px;
-	font-size: 0;
+  font-size: 0;
+  cursor: pointer;
 	position: absolute;
 	top: -52px;
 	left: -13px;
@@ -174,10 +175,6 @@ body {
 	width: calc(100% - 43px);
 	padding: 12px 16px;
 	margin: 0 0 0 43px;
-}
-
-.todo-list .todo.editing .view {
-	display: none;
 }
 
 .todo-list .todo .toggle {
@@ -252,10 +249,6 @@ body {
 
 .todo-list .todo:hover .destroy {
 	display: block;
-}
-
-.todo-list .todo .edit {
-	display: none;
 }
 
 .todo-list .todo.editing:last-child {

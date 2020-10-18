@@ -82,6 +82,12 @@ export class TodoService extends RxState<TodoState> {
     }));
   }
 
+  toggleAll(done: boolean): void {
+    this.set(({ todos }) => ({
+      todos: todos.map((todo) => ({ ...todo, done })),
+    }));
+  }
+
   clearCompleted(): void {
     this.set(({ todos }) => ({
       todos: todos.filter(({ done }) => !done),

@@ -17,7 +17,13 @@ import { TodoService } from './todo.service';
       />
     </header>
     <section class="main" *rxLet="todoService.todos$; let todos">
-      <input id="toggle-all" class="toggle-all" type="checkbox" />
+      <input
+        id="toggle-all"
+        #checkbox
+        class="toggle-all"
+        type="checkbox"
+        (input)="toggleAll($event)"
+      />
       <label for="toggle-all">Mark all as complete</label>
       <app-todo
         class="todo-list"
@@ -73,6 +79,9 @@ import { TodoService } from './todo.service';
 })
 export class TodoListComponent {
   @ViewChild('input', { static: false }) input: ElementRef<HTMLInputElement>;
+  @ViewChild('checkbox', { static: false }) checkbox: ElementRef<
+    HTMLInputElement
+  >;
 
   constructor(readonly todoService: TodoService) {}
 
@@ -81,5 +90,9 @@ export class TodoListComponent {
       this.todoService.add({ text: this.input.nativeElement.value });
       this.input.nativeElement.value = '';
     }
+  }
+
+  toggleAll(event: Event) {
+    this.todoService.toggleAll((event.target as any).checked);
   }
 }
