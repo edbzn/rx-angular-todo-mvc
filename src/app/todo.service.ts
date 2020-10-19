@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { RxState, stateful } from '@rx-angular/state';
+import { insert, remove, RxState, stateful, update } from '@rx-angular/state';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { INITIAL_STATE, Todo, TodoFilter, TodoState } from './todo-state';
+
+export const byId = (a, b) => a.id === b.id;
 
 @Injectable()
 export class TodoService extends RxState<TodoState> {
@@ -10,27 +12,26 @@ export class TodoService extends RxState<TodoState> {
 
   private readonly _filter$ = new Subject<{ filter: TodoFilter }>();
 
+  readonly filter$ = this.select('filter');
+
   readonly todos$ = this.select().pipe(
-    stateful(),
-    map(({ todos, filter }) =>
-      todos.filter(({ done }) => {
-        if (filter === 'all') return true;
-        if (filter === 'active') return !done;
-        if (filter === 'completed') return done;
-      })
+    stateful(
+      map(({ todos, filter }) =>
+        todos.filter(({ done }) => {
+          if (filter === 'all') return true;
+          if (filter === 'active') return !done;
+          if (filter === 'completed') return done;
+        })
+      )
     )
   );
 
-  readonly filter$ = this.select('filter');
-
   readonly completed$ = this._todos$.pipe(
-    stateful(),
-    map((todos) => todos.filter((todo) => todo.done))
+    stateful(map((todos) => todos.filter((todo) => todo.done)))
   );
 
   readonly active$ = this._todos$.pipe(
-    stateful(),
-    map((todos) => todos.filter((todo) => !todo.done))
+    stateful(map((todos) => todos.filter((todo) => !todo.done)))
   );
 
   constructor() {
@@ -45,38 +46,35 @@ export class TodoService extends RxState<TodoState> {
 
   add({ text }: Partial<Todo>): void {
     this.set(({ todos }) => ({
-      todos: [
-        {
-          id: todos.length,
-          text,
-          done: false,
-        },
-        ...todos,
-      ],
+      todos: insert(todos, {
+        id: todos.length,
+        text,
+        done: false,
+      }),
     }));
   }
 
-  remove({ id }: Partial<Todo>): void {
+  remove(todo: Partial<Todo>): void {
     this.set(({ todos }) => ({
-      todos: todos.filter((todo) => id !== todo.id),
+      todos: remove(todos, todo, byId),
     }));
   }
 
   toggleDone({ id, done }: Partial<Todo>): void {
     this.set(({ todos }) => ({
-      todos: todos.map((todo) => (id === todo.id ? { ...todo, done } : todo)),
+      todos: update(todos, { id, done }, byId),
     }));
   }
 
   setText({ id, text }: Partial<Todo>): void {
     this.set(({ todos }) => ({
-      todos: todos.map((todo) => (id === todo.id ? { ...todo, text } : todo)),
+      todos: update(todos, { id, text }, byId),
     }));
   }
 
   toggleAll({ done }: Partial<Todo>): void {
     this.set(({ todos }) => ({
-      todos: todos.map((todo) => ({ ...todo, done })),
+      todos: update(todos, { done }),
     }));
   }
 
