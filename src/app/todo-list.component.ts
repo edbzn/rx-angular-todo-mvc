@@ -41,7 +41,7 @@ import { TodoService } from './todo.service';
       <ul class="filters">
         <li>
           <button
-            [class.selected]="todoService.filter === 'all'"
+            [class.selected]="(todoService.filter$ | push) === 'all'"
             (click)="todoService.setFilter('all')"
           >
             {{ (todoService.todos$ | push)?.length }} All
@@ -49,7 +49,7 @@ import { TodoService } from './todo.service';
         </li>
         <li>
           <button
-            [class.selected]="todoService.filter === 'active'"
+            [class.selected]="(todoService.filter$ | push) === 'active'"
             (click)="todoService.setFilter('active')"
           >
             {{ (todoService.active$ | push)?.length }} Active
@@ -57,7 +57,7 @@ import { TodoService } from './todo.service';
         </li>
         <li>
           <button
-            [class.selected]="todoService.filter === 'completed'"
+            [class.selected]="(todoService.filter$ | push) === 'completed'"
             (click)="todoService.setFilter('completed')"
           >
             {{ (todoService.completed$ | push)?.length }} Completed
@@ -76,6 +76,7 @@ import { TodoService } from './todo.service';
       }
     `,
   ],
+  providers: [TodoService],
 })
 export class TodoListComponent {
   @ViewChild('input', { static: false }) input: ElementRef<HTMLInputElement>;
@@ -83,7 +84,7 @@ export class TodoListComponent {
     HTMLInputElement
   >;
 
-  constructor(readonly todoService: TodoService) {}
+  constructor(public readonly todoService: TodoService) {}
 
   add(event: KeyboardEvent): void {
     if (event.keyCode === 13) {
@@ -92,7 +93,7 @@ export class TodoListComponent {
     }
   }
 
-  toggleAll(event: Event) {
-    this.todoService.toggleAll((event.target as any).checked);
+  toggleAll(event: Event): void {
+    this.todoService.toggleAll({ done: (event.target as any).checked });
   }
 }

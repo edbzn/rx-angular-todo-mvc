@@ -1,27 +1,18 @@
 import { Injectable } from '@angular/core';
 import { RxState, stateful } from '@rx-angular/state';
-import { combineLatest } from 'rxjs';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Todo, TodoState } from './todo-state';
+import { INITIAL_STATE, Todo, TodoFilter, TodoState } from './todo-state';
 
-export type TodoFilter = 'all' | 'completed' | 'active';
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class TodoService extends RxState<TodoState> {
   private readonly _todos$ = this.select('todos');
 
-  private readonly _filter$ = new BehaviorSubject<TodoFilter>('all');
+  private readonly _filter$ = new Subject<{ filter: TodoFilter }>();
 
-  get filter() {
-    return this._filter$.value;
-  }
-
-  readonly todos$ = combineLatest([this._todos$, this._filter$]).pipe(
+  readonly todos$ = this.select().pipe(
     stateful(),
-    map(([todos, filter]) =>
+    map(({ todos, filter }) =>
       todos.filter(({ done }) => {
         if (filter === 'all') return true;
         if (filter === 'active') return !done;
@@ -29,6 +20,8 @@ export class TodoService extends RxState<TodoState> {
       })
     )
   );
+
+  readonly filter$ = this.select('filter');
 
   readonly completed$ = this._todos$.pipe(
     stateful(),
@@ -42,13 +35,12 @@ export class TodoService extends RxState<TodoState> {
 
   constructor() {
     super();
-    this.set({
-      todos: [{ id: 0, text: 'Hello world.', done: false }],
-    });
+    this.connect(this._filter$);
+    this.set(INITIAL_STATE);
   }
 
   setFilter(filter: TodoFilter): void {
-    this._filter$.next(filter);
+    this._filter$.next({ filter });
   }
 
   add({ text }: Partial<Todo>): void {
@@ -82,7 +74,7 @@ export class TodoService extends RxState<TodoState> {
     }));
   }
 
-  toggleAll(done: boolean): void {
+  toggleAll({ done }: Partial<Todo>): void {
     this.set(({ todos }) => ({
       todos: todos.map((todo) => ({ ...todo, done })),
     }));
