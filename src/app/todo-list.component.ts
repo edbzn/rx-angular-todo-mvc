@@ -13,7 +13,7 @@ import { TodoService } from './todo.service';
         #input
         class="new-todo"
         placeholder="What needs to be done?"
-        (keyup)="add($event)"
+        (keyup)="insert($event)"
       />
     </header>
     <section class="main" *rxLet="todoService.todos$; let todos">
@@ -44,7 +44,7 @@ import { TodoService } from './todo.service';
             [class.selected]="(todoService.filter$ | push) === 'all'"
             (click)="todoService.setFilter('all')"
           >
-            {{ (todoService.todos$ | push)?.length }} All
+            {{ (todoService.all$ | push)?.length }} All
           </button>
         </li>
         <li>
@@ -86,9 +86,9 @@ export class TodoListComponent {
 
   constructor(public readonly todoService: TodoService) {}
 
-  add(event: KeyboardEvent): void {
+  insert(event: KeyboardEvent): void {
     if (event.keyCode === 13) {
-      this.todoService.add({ text: this.input.nativeElement.value });
+      this.todoService.insert({ text: this.input.nativeElement.value });
       this.input.nativeElement.value = '';
     }
   }

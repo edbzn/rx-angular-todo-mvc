@@ -81,7 +81,7 @@ export class TodoComponent {
   }
 
   onEnter(event: KeyboardEvent): void {
-    if (event && event.keyCode === 13) {
+    if (event.keyCode === 13) {
       this.updateText();
     }
   }

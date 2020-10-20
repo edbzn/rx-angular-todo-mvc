@@ -14,5 +14,5 @@ export interface TodoState {
 
 export const INITIAL_STATE: TodoState = {
   filter: 'all',
-  todos: [{ id: 0, text: 'Hello world.', done: false }],
+  todos: [{ id: 0, text: 'Call mom', done: false }],
 };
