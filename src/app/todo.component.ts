@@ -6,7 +6,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { RxState, selectSlice } from '@rx-angular/state';
+import { RxState } from '@rx-angular/state';
 import { asyncScheduler } from 'rxjs';
 import { filter, observeOn } from 'rxjs/operators';
 
