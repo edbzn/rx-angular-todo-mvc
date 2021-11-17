@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   template: `
     <app-todo-list></app-todo-list>
     <footer>
-      An <strong>Angular zoneless experiment</strong> using
+      <strong>Angular Zoneless experiment</strong> using
       <code>
         <a
           href="https://github.com/rx-angular/rx-angular/blob/master/libs/state/README.md"

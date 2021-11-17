@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { insert, remove, RxState, selectSlice, update } from '@rx-angular/state';
+import { insert, remove, RxState, selectSlice, stateful, update } from '@rx-angular/state';
 import { combineLatest, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -54,7 +54,7 @@ export class TodoService extends RxState<TodoState> {
     activeTodos: this._activeTodos$,
     filteredTodos: this._filteredTodos$,
     completedTodos: this._completedTodos$,
-  });
+  }).pipe(stateful());
 
   constructor() {
     super();

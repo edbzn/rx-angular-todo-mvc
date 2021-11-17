@@ -82,8 +82,10 @@ import { TodoService } from './todo.service';
   providers: [TodoService],
 })
 export class TodoListComponent {
-  @ViewChild('input', { static: false }) input: ElementRef<HTMLInputElement>;
-  @ViewChild('checkbox', { static: false })
+  @ViewChild('input')
+  input: ElementRef<HTMLInputElement>;
+
+  @ViewChild('checkbox')
   checkbox: ElementRef<HTMLInputElement>;
 
   constructor(public readonly todoService: TodoService) {}

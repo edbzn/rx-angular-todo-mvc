@@ -17,25 +17,25 @@ import { Todo } from './todo-state';
   template: `
     <article
       class="todo"
-      [class]="{ completed: todo.done, editing: isEditing }"
-      *rxLet="isEditing$; let isEditing"
+      *rxLet="vm$; let vm"
+      [class]="{ completed: vm.todo.done, editing: vm.isEditing }"
     >
-      <div class="view" *ngIf="!isEditing">
+      <div class="view" *ngIf="!vm.isEditing">
         <input
           #toggle
           class="toggle"
           type="checkbox"
-          [checked]="todo.done"
+          [checked]="vm.todo.done"
           (input)="toggleDone()"
         />
-        <label (dblclick)="edit()">{{ todo.text }}</label>
+        <label (dblclick)="edit()">{{ vm.todo.text }}</label>
         <button class="destroy" (click)="destroy()"></button>
       </div>
       <input
         #input
         class="edit"
-        [hidden]="!isEditing"
-        [value]="todo.text"
+        [hidden]="!vm.isEditing"
+        [value]="vm.todo.text"
         (blur)="updateText()"
         (keyup)="onEnter($event)"
       />
@@ -47,22 +47,32 @@ export class TodoComponent {
   @ViewChild('input') input: ElementRef<HTMLInputElement>;
   @ViewChild('toggle') toggle: ElementRef<HTMLInputElement>;
 
-  @Input() readonly todo: Todo;
+  @Input() set todo(todo: Todo) {
+    this.state.set({ todo });
+  }
 
+  get todo(): Todo {
+    return this.state.get('todo');
+  }
+
+  @Output() remove = new EventEmitter<{ id: number }>();
   @Output() done = new EventEmitter<{ id: number; done: boolean }>();
   @Output() textUpdate = new EventEmitter<{ id: number; text: string }>();
-  @Output() remove = new EventEmitter<{ id: number }>();
 
-  readonly isEditing$ = this.state.select('isEditing');
+  readonly vm$ = this.state.select();
 
-  constructor(private readonly state: RxState<{ isEditing: boolean }>) {
+  constructor(
+    private readonly state: RxState<{ isEditing: boolean; todo: Todo }>
+  ) {
     this.state.set({ isEditing: false });
-    this.state.hold(
-      this.isEditing$.pipe(filter(Boolean), observeOn(asyncScheduler)),
-      () => {
-        this.input.nativeElement.focus();
-      }
-    );
+
+    const isEditing$ = this.state
+      .select('isEditing')
+      .pipe(filter(Boolean), observeOn(asyncScheduler));
+
+    this.state.hold(isEditing$, () => {
+      this.input.nativeElement.focus();
+    });
   }
 
   toggleDone(): void {
