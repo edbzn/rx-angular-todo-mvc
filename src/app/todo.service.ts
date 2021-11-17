@@ -58,7 +58,7 @@ export class TodoService extends RxState<TodoState> {
 
   constructor() {
     super();
-    this.set(INITIAL_STATE);
+    this._initialize();
 
     /**
      * Action handlers
@@ -82,6 +82,13 @@ export class TodoService extends RxState<TodoState> {
     this.connect('todos', this._clearCompleted$, ({ todos }, { done }) =>
       remove(todos, { done }, 'done')
     );
+
+    /**
+     * Side effect handler
+     */
+    this.hold(this.select(), (state) => {
+      window.localStorage.setItem('__state', JSON.stringify(state));
+    });
   }
 
   /**
@@ -113,5 +120,13 @@ export class TodoService extends RxState<TodoState> {
 
   clearCompleted(): void {
     this._clearCompleted$.next({ done: true });
+  }
+
+  private _initialize(): void {
+    if (window.localStorage.getItem('__state')) {
+      this.set(JSON.parse(window.localStorage.getItem('__state')) as TodoState)
+    } else {
+      this.set(INITIAL_STATE);
+    }
   }
 }
