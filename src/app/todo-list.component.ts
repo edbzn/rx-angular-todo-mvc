@@ -1,4 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Todo } from './todo-state';
 import { TodoService } from './todo.service';
 
 @Component({
@@ -28,7 +29,7 @@ import { TodoService } from './todo.service';
         <label for="toggle-all">Mark all as complete</label>
         <app-todo
           class="todo-list"
-          *ngFor="let todo of vm.filteredTodos"
+          *ngFor="let todo of vm.filteredTodos; trackBy: trackById"
           [todo]="todo"
           (textUpdate)="todoService.setText($event)"
           (done)="todoService.toggleDone($event)"
@@ -96,5 +97,9 @@ export class TodoListComponent {
 
   toggleAll(event: Event): void {
     this.todoService.toggleAll({ done: (event.target as any).checked });
+  }
+
+  trackById(i, todo: Todo) {
+    return todo.id;
   }
 }
