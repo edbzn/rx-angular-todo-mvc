@@ -7,6 +7,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import { RxState } from '@rx-angular/state';
+import { asyncScheduler } from 'rxjs';
+import { filter, observeOn } from 'rxjs/operators';
+
 import { Todo } from './todo-state';
 
 @Component({
@@ -31,7 +34,7 @@ import { Todo } from './todo-state';
       <input
         #input
         class="edit"
-        *ngIf="isEditing"
+        [hidden]="!isEditing"
         [value]="todo.text"
         (blur)="updateText()"
         (keyup)="onEnter($event)"
@@ -41,8 +44,8 @@ import { Todo } from './todo-state';
   providers: [RxState],
 })
 export class TodoComponent {
-  @ViewChild('input', { static: false }) input: ElementRef<HTMLInputElement>;
-  @ViewChild('toggle', { static: false }) toggle: ElementRef<HTMLInputElement>;
+  @ViewChild('input') input: ElementRef<HTMLInputElement>;
+  @ViewChild('toggle') toggle: ElementRef<HTMLInputElement>;
 
   @Input() readonly todo: Todo;
 
@@ -54,6 +57,12 @@ export class TodoComponent {
 
   constructor(private readonly state: RxState<{ isEditing: boolean }>) {
     this.state.set({ isEditing: false });
+    this.state.hold(
+      this.isEditing$.pipe(filter(Boolean), observeOn(asyncScheduler)),
+      () => {
+        this.input.nativeElement.focus();
+      }
+    );
   }
 
   toggleDone(): void {
@@ -65,9 +74,6 @@ export class TodoComponent {
 
   edit(): void {
     this.state.set({ isEditing: true });
-    setTimeout(() => {
-      this.input.nativeElement.focus();
-    });
   }
 
   destroy(): void {
