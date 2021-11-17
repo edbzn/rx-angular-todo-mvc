@@ -6,7 +6,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { RxState } from '@rx-angular/state';
+import { RxState, selectSlice } from '@rx-angular/state';
 import { asyncScheduler } from 'rxjs';
 import { filter, observeOn } from 'rxjs/operators';
 
@@ -17,7 +17,7 @@ import { Todo } from './todo-state';
   template: `
     <article
       class="todo"
-      *rxLet="vm$; let vm"
+      *ngIf="vm$ | push as vm"
       [class]="{ completed: vm.todo.done, editing: vm.isEditing }"
     >
       <div class="view" *ngIf="!vm.isEditing">
@@ -34,7 +34,7 @@ import { Todo } from './todo-state';
       <input
         #input
         class="edit"
-        [hidden]="!vm.isEditing"
+        *ngIf="vm.isEditing"
         [value]="vm.todo.text"
         (blur)="updateText()"
         (keyup)="onEnter($event)"
@@ -51,13 +51,8 @@ export class TodoComponent {
     this.state.set({ todo });
   }
 
-  get todo(): Todo {
-    return this.state.get('todo');
-  }
-
   @Output() remove = new EventEmitter<{ id: number }>();
-  @Output() done = new EventEmitter<{ id: number; done: boolean }>();
-  @Output() textUpdate = new EventEmitter<{ id: number; text: string }>();
+  @Output() change = this.state.select('todo');
 
   readonly vm$ = this.state.select();
 
@@ -76,10 +71,12 @@ export class TodoComponent {
   }
 
   toggleDone(): void {
-    this.done.emit({
-      id: this.todo.id,
-      done: this.toggle.nativeElement.checked,
-    });
+    this.state.set(({ todo }) => ({
+      todo: {
+        ...todo,
+        done: this.toggle.nativeElement.checked,
+      },
+    }));
   }
 
   edit(): void {
@@ -87,13 +84,17 @@ export class TodoComponent {
   }
 
   destroy(): void {
-    this.remove.emit(this.todo);
+    this.remove.emit(this.state.get('todo'));
   }
 
   updateText(): void {
-    const { value } = this.input.nativeElement;
-    this.textUpdate.emit({ id: this.todo.id, text: value });
-    this.state.set({ isEditing: false });
+    this.state.set(({ todo }) => ({
+      isEditing: false,
+      todo: {
+        ...todo,
+        text: this.input.nativeElement.value,
+      },
+    }));
   }
 
   onEnter(event: KeyboardEvent): void {

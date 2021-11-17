@@ -8,7 +8,7 @@ import { TodoService } from './todo.service';
     class: 'todo-app',
   },
   template: `
-    <ng-container *rxLet="todoService.vm$; let vm">
+    <ng-container *ngIf="todoService.vm$ | push as vm">
       <header class="header">
         <h1>Todo</h1>
         <input
@@ -31,8 +31,7 @@ import { TodoService } from './todo.service';
           class="todo-list"
           *ngFor="let todo of vm.filteredTodos; trackBy: trackById"
           [todo]="todo"
-          (textUpdate)="todoService.setText($event)"
-          (done)="todoService.toggleDone($event)"
+          (change)="todoService.update($event)"
           (remove)="todoService.remove($event)"
         ></app-todo>
       </section>
