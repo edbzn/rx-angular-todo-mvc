@@ -65,7 +65,7 @@ export class TodoService extends RxState<TodoState> {
      */
     this.connect('filter', this._setFilter$);
     this.connect('todos', this._insert$, ({ todos }, { text }) =>
-      insert(todos, { id: todos.length, text, done: false })
+      insert(todos, { id: Math.round(Math.random() * 100000), text, done: false })
     );
     this.connect('todos', this._remove$, ({ todos }, { id }) =>
       remove(todos, { id }, 'id')
