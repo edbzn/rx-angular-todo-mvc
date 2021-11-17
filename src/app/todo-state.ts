@@ -1,4 +1,3 @@
-
 export type TodoFilter = 'all' | 'completed' | 'active';
 
 export interface Todo {
@@ -14,5 +13,8 @@ export interface TodoState {
 
 export const INITIAL_STATE: TodoState = {
   filter: 'all',
-  todos: [{ id: 0, text: 'Call mom', done: false }],
+  todos: [
+    { id: 0, text: 'Call mom', done: false },
+    { id: 1, text: 'Pay bills', done: true },
+  ],
 };

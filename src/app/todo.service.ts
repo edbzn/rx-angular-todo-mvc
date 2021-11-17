@@ -1,55 +1,69 @@
 import { Injectable } from '@angular/core';
-import {
-  insert,
-  remove,
-  RxState,
-  stateful,
-  update,
-} from '@rx-angular/state';
-import { Subject } from 'rxjs';
+import { insert, remove, RxState, selectSlice, update } from '@rx-angular/state';
+import { combineLatest, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { INITIAL_STATE, Todo, TodoFilter, TodoState } from './todo-state';
 
 @Injectable()
 export class TodoService extends RxState<TodoState> {
+  /**
+   * Actions
+   */
   private readonly _insert$ = new Subject<Partial<Todo>>();
   private readonly _remove$ = new Subject<Partial<Todo>>();
   private readonly _setText$ = new Subject<Partial<Todo>>();
   private readonly _toggleDone$ = new Subject<Partial<Todo>>();
   private readonly _toggleAll$ = new Subject<Partial<Todo>>();
   private readonly _clearCompleted$ = new Subject<Partial<Todo>>();
-  private readonly _filter$ = new Subject<TodoFilter>();
+  private readonly _setFilter$ = new Subject<TodoFilter>();
 
-  private readonly _todos$ = this.select('todos');
+  /**
+   * State
+   */
+  private readonly _filter$ = this.select('filter');
+  private readonly _allTodos$ = this.select('todos');
 
-  readonly filter$ = this.select('filter');
-
-  readonly todos$ = this.select().pipe(
-    stateful(
-      map(({ todos, filter }) =>
-        todos.filter(({ done }) => {
-          if (filter === 'all') return true;
-          if (filter === 'active') return !done;
-          if (filter === 'completed') return done;
-        })
-      )
+  /**
+   * Derived state
+   */
+  private readonly _filteredTodos$ = this.select(
+    selectSlice(['filter', 'todos'])
+  ).pipe(
+    map(({ todos, filter }) =>
+      todos.filter(({ done }) => {
+        if (filter === 'all') return true;
+        if (filter === 'active') return !done;
+        if (filter === 'completed') return done;
+      })
     )
   );
-
-  readonly all$ = this._todos$.pipe(stateful());
-
-  readonly completed$ = this._todos$.pipe(
-    stateful(map((todos) => todos.filter((todo) => todo.done)))
+  private readonly _completedTodos$ = this._allTodos$.pipe(
+    map((todos) => todos.filter((todo) => todo.done))
+  );
+  private readonly _activeTodos$ = this._allTodos$.pipe(
+    map((todos) => todos.filter((todo) => !todo.done))
   );
 
-  readonly active$ = this._todos$.pipe(
-    stateful(map((todos) => todos.filter((todo) => !todo.done)))
-  );
+  /**
+   * Exposed view model
+   */
+  readonly vm$ = combineLatest({
+    filter: this._filter$,
+    allTodos: this._allTodos$,
+    activeTodos: this._activeTodos$,
+    filteredTodos: this._filteredTodos$,
+    completedTodos: this._completedTodos$,
+  });
 
   constructor() {
     super();
     this.set(INITIAL_STATE);
-    this.connect('filter', this._filter$);
+
+    /**
+     * Action handlers
+     */
+    this.connect('filter', this._setFilter$);
     this.connect('todos', this._insert$, ({ todos }, { text }) =>
       insert(todos, { id: todos.length, text, done: false })
     );
@@ -70,8 +84,11 @@ export class TodoService extends RxState<TodoState> {
     );
   }
 
+  /**
+   * Exposed actions
+   */
   setFilter(filter: TodoFilter): void {
-    this._filter$.next(filter);
+    this._setFilter$.next(filter);
   }
 
   insert(todo: Partial<Todo>): void {
