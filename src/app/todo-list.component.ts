@@ -8,7 +8,7 @@ import { TodoService } from './todo.service';
     class: 'todo-app',
   },
   template: `
-    <ng-container *ngIf="todoService.vm$ | push as vm">
+    <ng-container *rxLet="todoService.vm$ as vm">
       <header class="header">
         <h1>Todo</h1>
         <input

@@ -17,7 +17,7 @@ import { Todo } from './todo-state';
   template: `
     <article
       class="todo"
-      *ngIf="vm$ | push as vm"
+      *rxLet="vm$ as vm"
       [class]="{ completed: vm.todo.done, editing: vm.isEditing }"
     >
       <div class="view" *ngIf="!vm.isEditing">
