@@ -51,24 +51,20 @@
                 }
               ]
             },
-            "dev": {
-              "sourceMap": true,
-              "namedChunks": true,
-              "vendorChunk": true,
+            "development": {
               "buildOptimizer": false,
-              "optimization": false
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "todo-mvc:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "todo-mvc:build:production"
-            }
+            "browserTarget": "todo-mvc:build:development"
           }
         }
       }

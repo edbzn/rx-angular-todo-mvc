@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "analyse": "ng run todo-mvc:build:dev --stats-json && webpack-bundle-analyzer dist/todo-mvc/stats.json"
+    "analyse": "ng run todo-mvc:build:development --stats-json && webpack-bundle-analyzer dist/todo-mvc/stats.json"
   },
   "private": true,
   "dependencies": {
