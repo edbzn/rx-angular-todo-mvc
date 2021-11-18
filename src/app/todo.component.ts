@@ -51,8 +51,12 @@ export class TodoComponent {
     this.state.set({ todo });
   }
 
-  @Output() remove = new EventEmitter<{ id: number }>();
-  @Output() change = this.state.select('todo');
+  get todo(): Todo {
+    return this.state.get('todo');
+  }
+
+  @Output() remove = new EventEmitter<Pick<Todo, 'id'>>();
+  @Output() change = new EventEmitter<Pick<Todo, 'id' | 'text' | 'done'>>();
 
   readonly vm$ = this.state.select();
 
@@ -77,6 +81,7 @@ export class TodoComponent {
         done: this.toggle.nativeElement.checked,
       },
     }));
+    this.change.emit(this.todo);
   }
 
   edit(): void {
@@ -84,7 +89,7 @@ export class TodoComponent {
   }
 
   destroy(): void {
-    this.remove.emit(this.state.get('todo'));
+    this.remove.emit(this.todo);
   }
 
   updateText(): void {
@@ -95,6 +100,7 @@ export class TodoComponent {
         text: this.input.nativeElement.value,
       },
     }));
+    this.change.emit(this.todo);
   }
 
   onEnter(event: KeyboardEvent): void {
