@@ -12,7 +12,6 @@ import { TodoService } from './todo.service';
       <header class="header">
         <h1>Todo</h1>
         <input
-          #input
           class="new-todo"
           placeholder="What needs to be done?"
           (keyup)="insert($event)"
@@ -21,7 +20,6 @@ import { TodoService } from './todo.service';
       <section class="main">
         <input
           id="toggle-all"
-          #checkbox
           class="toggle-all"
           type="checkbox"
           (input)="toggleAll($event)"
@@ -84,20 +82,19 @@ export class TodoListComponent {
   @ViewChild('input')
   input: ElementRef<HTMLInputElement>;
 
-  @ViewChild('checkbox')
-  checkbox: ElementRef<HTMLInputElement>;
-
   constructor(public readonly todoService: TodoService) {}
 
-  insert(event: KeyboardEvent): void {
+  addTodo(event: KeyboardEvent): void {
     if (event.keyCode === 13) {
-      this.todoService.insert({ text: this.input.nativeElement.value });
+      this.todoService.insert({ text: this.input.nativeElement.value.trim() });
       this.input.nativeElement.value = '';
     }
   }
 
   toggleAll(event: Event): void {
-    this.todoService.toggleAll({ done: (event.target as any).checked });
+    this.todoService.toggleAll({
+      done: (event.target as HTMLInputElement).checked,
+    });
   }
 
   trackById(i, todo: Todo) {
