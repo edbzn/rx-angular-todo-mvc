@@ -37,7 +37,7 @@ import { Todo } from './todo-state';
         *ngIf="vm.isEditing"
         [value]="vm.todo.text"
         (blur)="updateText()"
-        (keyup)="onEnter($event)"
+        (keyup.enter)="updateText()"
       />
     </article>
   `,
@@ -101,11 +101,5 @@ export class TodoComponent {
       },
     }));
     this.change.emit(this.todo);
-  }
-
-  onEnter(event: KeyboardEvent): void {
-    if (event.keyCode === 13) {
-      this.updateText();
-    }
   }
 }

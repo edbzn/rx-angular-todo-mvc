@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 import { Todo } from './todo-state';
 import { TodoService } from './todo.service';
@@ -23,47 +23,19 @@ import { TodoService } from './todo.service';
         class="toggle-all"
         id="toggle-all"
         type="checkbox"
-        #checkbox
-        [checked]="todoService.completed$ | async"
         (click)="toggleAll($event)"
       />
       <label for="toggle-all">Mark all as complete</label>
-      <ul class="todo-list">
-        <li
-          *ngFor="
-            let todo of todoService.filteredTodos$ | async;
-            trackBy: trackById
-          "
-          [ngClass]="{
-            completed: todo.done,
-            editing: todo == currentTodo
-          }"
-        >
-          <div class="view">
-            <input
-              class="toggle"
-              type="checkbox"
-              (change)="toggle(todo)"
-              [checked]="todo.done"
-            />
-            <label (dblclick)="edit(todo)">{{ todo.text }}</label>
-            <button (click)="delete(todo)" class="destroy"></button>
-          </div>
-          <input
-            *ngIf="currentTodo == todo"
-            (keyup.enter)="update(todo)"
-            (keyup.esc)="cancelEdit()"
-            class="edit"
-          />
-        </li>
-      </ul>
-      <!-- <app-todo
+      <app-todo
         class="todo-list"
-        *ngFor="let todo of filteredTodos; trackBy: trackById"
+        *ngFor="
+          let todo of todoService.filteredTodos$ | async;
+          trackBy: trackById
+        "
         [todo]="todo"
         (change)="todoService.update($event)"
         (remove)="todoService.remove($event)"
-      ></app-todo> -->
+      ></app-todo>
     </section>
     <footer class="footer">
       <span class="todo-count">
@@ -108,52 +80,41 @@ import { TodoService } from './todo.service';
     `,
   ],
 })
-export class TodoListComponent implements OnInit {
+export class TodoListComponent {
   @ViewChild('input')
   input: ElementRef<HTMLInputElement>;
 
   constructor(public todoService: TodoService) {}
 
-  ngOnInit() {}
-
   addTodo() {
-    const text = this.input.nativeElement.value;
-    if (text.trim().length === 0) {
+    const text = this.input.nativeElement.value.trim();
+    if (text.length === 0) {
       return;
     }
 
-    this.todoService.createTodo(text.trim()).subscribe(() => {
+    this.todoService.create({ text }).subscribe(() => {
       this.input.nativeElement.value = '';
     });
   }
 
-  toggleAll(completed: boolean) {
-    this.todoService.toggleAll(completed).subscribe();
-  }
-
-  toggle(todo: Todo) {
-    todo.done = !todo.done;
-    this.todoService.updateTodo(todo).subscribe();
-  }
-
-  edit(todo: Todo) {
-    // this.currentTodo = todo;
+  toggleAll(event: Event) {
+    this.todoService
+      .toggleAll({
+        done: (event.target as HTMLInputElement).checked,
+      })
+      .subscribe();
   }
 
   update(todo: Todo) {
-    this.todoService.updateTodo(todo).subscribe();
+    this.todoService.update(todo).subscribe();
   }
 
   delete(todo: Todo) {
-    this.todoService.deleteTodo(todo.id).subscribe();
+    this.todoService.remove({ id: todo.id }).subscribe();
   }
 
   clearCompleted() {
     this.todoService.clearCompleted().subscribe();
-  }
-
-  cancelEdit() {
-    // this.currentTodo = null;
   }
 
   trackById(index: number, todo: Todo) {

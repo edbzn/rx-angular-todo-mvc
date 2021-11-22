@@ -34,14 +34,14 @@ export class TodoService {
     this._filter$.next(filter);
   }
 
-  createTodo(text: string) {
+  create(todo: Pick<Todo, 'text'>) {
     return this._todos$.asObservable().pipe(
       take(1),
       map((todos) => [
         ...todos,
         {
           id: Math.round(Math.random() * 100000),
-          text,
+          text: todo.text,
           done: false,
         },
       ]),
@@ -49,7 +49,7 @@ export class TodoService {
     );
   }
 
-  updateTodo(todo: Todo) {
+  update(todo: Todo) {
     return this._todos$.asObservable().pipe(
       take(1),
       map((todos) =>
@@ -67,21 +67,21 @@ export class TodoService {
     );
   }
 
-  deleteTodo(id: number) {
+  remove(todo: Pick<Todo, 'id'>) {
     return this._todos$.asObservable().pipe(
       take(1),
-      map((todos) => todos.filter((_todo) => (_todo.id !== id ? true : false))),
+      map((todos) => todos.filter((_todo) => (_todo.id !== todo.id ? true : false))),
       tap((todos) => this._todos$.next(todos))
     );
   }
 
-  toggleAll(done: boolean) {
+  toggleAll(todo: Pick<Todo, 'done'>) {
     return this._todos$.asObservable().pipe(
       take(1),
       map((todos) =>
         todos.map((_todo) => ({
           ..._todo,
-          done,
+          done: todo.done,
         }))
       ),
       tap((todos) => this._todos$.next(todos))
