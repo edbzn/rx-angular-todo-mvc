@@ -12,9 +12,10 @@ import { TodoService } from './todo.service';
       <header class="header">
         <h1>Todo</h1>
         <input
+          #input
           class="new-todo"
           placeholder="What needs to be done?"
-          (keyup)="insert($event)"
+          (keyup.enter)="addTodo()"
         />
       </header>
       <section class="main">
@@ -22,7 +23,7 @@ import { TodoService } from './todo.service';
           id="toggle-all"
           class="toggle-all"
           type="checkbox"
-          (input)="toggleAll($event)"
+          (click)="toggleAll($event)"
         />
         <label for="toggle-all">Mark all as complete</label>
         <app-todo
@@ -84,11 +85,14 @@ export class TodoListComponent {
 
   constructor(public readonly todoService: TodoService) {}
 
-  addTodo(event: KeyboardEvent): void {
-    if (event.keyCode === 13) {
-      this.todoService.insert({ text: this.input.nativeElement.value.trim() });
-      this.input.nativeElement.value = '';
+  addTodo(): void {
+    const text = this.input.nativeElement.value.trim();
+    if (text.length === 0) {
+      return;
     }
+
+    this.todoService.create({ text });
+    this.input.nativeElement.value = '';
   }
 
   toggleAll(event: Event): void {

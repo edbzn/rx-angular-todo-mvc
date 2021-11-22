@@ -17,7 +17,7 @@ export class TodoService extends RxState<TodoState> {
   /**
    * Actions
    */
-  private readonly _insert$ = new Subject< Pick<Todo, 'text'>>();
+  private readonly _create$ = new Subject< Pick<Todo, 'text'>>();
   private readonly _remove$ = new Subject<Pick<Todo, 'id'>>();
   private readonly _update$ = new Subject<Pick<Todo, 'id' | 'text' | 'done'>>();
   private readonly _toggleAll$ = new Subject<Pick<Todo, 'done'>>();
@@ -70,7 +70,7 @@ export class TodoService extends RxState<TodoState> {
      * Action handlers
      */
     this.connect('filter', this._setFilter$);
-    this.connect('todos', this._insert$, ({ todos }, { text }) =>
+    this.connect('todos', this._create$, ({ todos }, { text }) =>
       insert(todos, {
         id: Math.round(Math.random() * 100000),
         text,
@@ -105,15 +105,15 @@ export class TodoService extends RxState<TodoState> {
     this._setFilter$.next(filter);
   }
 
-  insert(todo: Pick<Todo, 'text'>): void {
-    this._insert$.next(todo);
+  create(todo: Pick<Todo, 'text'>): void {
+    this._create$.next(todo);
   }
 
   remove(todo: Pick<Todo, 'id'>): void {
     this._remove$.next(todo);
   }
 
-  update(todo: Pick<Todo, 'id' | 'text' | 'done'>): void {
+  update(todo: Todo): void {
     this._update$.next(todo);
   }
 
