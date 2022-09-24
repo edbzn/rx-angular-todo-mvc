@@ -1,19 +1,26 @@
+import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
   Input,
   Output,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
 import { RxState } from '@rx-angular/state';
+import { LetModule } from '@rx-angular/template/let';
 import { asyncScheduler } from 'rxjs';
 import { filter, observeOn } from 'rxjs/operators';
 
 import { Todo } from './todo-state';
 
 @Component({
+  standalone: true,
   selector: 'app-todo',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, LetModule],
+  providers: [RxState],
   template: `
     <article
       class="todo"
@@ -41,7 +48,6 @@ import { Todo } from './todo-state';
       />
     </article>
   `,
-  providers: [RxState],
 })
 export class TodoComponent {
   @ViewChild('input') input: ElementRef<HTMLInputElement>;

@@ -1,12 +1,26 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { LetModule } from '@rx-angular/template/let';
 import { Todo } from './todo-state';
+import { TodoComponent } from './todo.component';
 import { TodoService } from './todo.service';
 
 @Component({
+  standalone: true,
   selector: 'app-todo-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, LetModule, TodoComponent],
+  providers: [TodoService],
   host: {
     class: 'todo-app',
   },
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
   template: `
     <ng-container *rxLet="todoService.vm$ as vm">
       <header class="header">
@@ -70,14 +84,6 @@ import { TodoService } from './todo.service';
       </footer>
     </ng-container>
   `,
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-    `,
-  ],
-  providers: [TodoService],
 })
 export class TodoListComponent {
   @ViewChild('input')

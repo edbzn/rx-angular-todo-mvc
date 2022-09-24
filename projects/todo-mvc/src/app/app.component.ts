@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { TodoListComponent } from './todo-list.component';
 
 @Component({
   selector: 'app-root',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-todo-list></app-todo-list>
     <footer>
@@ -24,3 +27,10 @@ import { Component } from '@angular/core';
   `,
 })
 export class AppComponent {}
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule, TodoListComponent],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
