@@ -3,35 +3,35 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "rx-angular": {
+    "todo-mvc": {
       "projectType": "application",
       "schematics": {},
-      "root": "projects/rx-angular",
-      "sourceRoot": "projects/rx-angular/src",
+      "root": "projects/todo-mvc",
+      "sourceRoot": "projects/todo-mvc/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/rx-angular",
-            "index": "projects/rx-angular/src/index.html",
-            "main": "projects/rx-angular/src/main.ts",
-            "polyfills": "projects/rx-angular/src/polyfills.ts",
-            "tsConfig": "projects/rx-angular/tsconfig.app.json",
+            "outputPath": "dist/todo-mvc",
+            "index": "projects/todo-mvc/src/index.html",
+            "main": "projects/todo-mvc/src/main.ts",
+            "polyfills": "projects/todo-mvc/src/polyfills.ts",
+            "tsConfig": "projects/todo-mvc/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "projects/rx-angular/src/favicon.ico",
-              "projects/rx-angular/src/assets"
+              "projects/todo-mvc/src/favicon.ico",
+              "projects/todo-mvc/src/assets"
             ],
-            "styles": ["projects/rx-angular/src/styles.css"],
+            "styles": ["projects/todo-mvc/src/styles.css"],
             "scripts": []
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/rx-angular/src/environments/environment.ts",
-                  "with": "projects/rx-angular/src/environments/environment.prod.ts"
+                  "replace": "projects/todo-mvc/src/environments/environment.ts",
+                  "with": "projects/todo-mvc/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -68,84 +68,11 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "rx-angular:build:development"
+            "browserTarget": "todo-mvc:build:development"
           }
-        }
-      }
-    },
-    "angular": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:application": {
-          "strict": true
-        }
-      },
-      "root": "projects/angular",
-      "sourceRoot": "projects/angular/src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/angular",
-            "index": "projects/angular/src/index.html",
-            "main": "projects/angular/src/main.ts",
-            "polyfills": "projects/angular/src/polyfills.ts",
-            "tsConfig": "projects/angular/tsconfig.app.json",
-            "assets": [
-              "projects/angular/src/favicon.ico",
-              "projects/angular/src/assets"
-            ],
-            "styles": ["projects/angular/src/styles.css"],
-            "scripts": []
-          },
-          "configurations": {
-            "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "projects/angular/src/environments/environment.ts",
-                  "with": "projects/angular/src/environments/environment.prod.ts"
-                }
-              ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "browserTarget": "angular:build:production"
-            },
-            "development": {
-              "browserTarget": "angular:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
         }
       }
     }
   },
-  "defaultProject": "rx-angular"
+  "defaultProject": "todo-mvc"
 }

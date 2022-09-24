@@ -1,5 +1,8 @@
-# Zoneless Todo MVC using RxAngular
+# Todo MVC RxAngular
 
-Todo mvc demo using [RxAngular](https://rx-angular.github.io/rx-angular/#/) without `zone.js`.
+Todo MVC app demo using [RxAngular](https://rx-angular.github.io/rx-angular/#/).
 
-![app image](https://pbs.twimg.com/media/EkmsWqNW0AA40dk?format=jpg&name=medium)
+- Push Based Architecture
+- Zoneless
+
+![demo](https://pbs.twimg.com/media/EkmsWqNW0AA40dk?format=jpg&name=medium)
