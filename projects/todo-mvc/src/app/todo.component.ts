@@ -62,7 +62,7 @@ export class TodoComponent {
   }
 
   @Output() remove = new EventEmitter<Pick<Todo, 'id'>>();
-  @Output() change = new EventEmitter<Pick<Todo, 'id' | 'text' | 'done'>>();
+  @Output() change = this.state.select('todo');
 
   readonly vm$ = this.state.select();
 
@@ -87,7 +87,6 @@ export class TodoComponent {
         done: this.toggle.nativeElement.checked,
       },
     }));
-    this.change.emit(this.todo);
   }
 
   edit(): void {
@@ -106,6 +105,5 @@ export class TodoComponent {
         text: this.input.nativeElement.value,
       },
     }));
-    this.change.emit(this.todo);
   }
 }
