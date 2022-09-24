@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { RxActionFactory } from '@rx-angular/state/actions';
 import { LetModule } from '@rx-angular/template/let';
 import { Todo } from './todo-state';
 import { TodoComponent } from './todo.component';
@@ -10,7 +11,7 @@ import { TodoService } from './todo.service';
   selector: 'app-todo-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, LetModule, TodoComponent],
-  providers: [TodoService],
+  providers: [TodoService, RxActionFactory],
   host: {
     class: 'todo-app',
   },

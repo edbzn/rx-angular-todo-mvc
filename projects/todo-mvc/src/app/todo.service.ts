@@ -1,28 +1,27 @@
 import { Injectable } from '@angular/core';
-import {
-  insert,
-  remove,
-  RxState,
-  selectSlice,
-  stateful,
-  update,
-} from '@rx-angular/state';
-import { combineLatest, Subject } from 'rxjs';
+import { insert, remove, update } from '@rx-angular/cdk/transformations';
+import { RxState, selectSlice, stateful } from '@rx-angular/state';
+import { RxActionFactory } from '@rx-angular/state/actions';
+import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { INITIAL_STATE, Todo, TodoFilter, TodoState } from './todo-state';
 
+interface Commands {
+  create: Pick<Todo, 'text'>;
+  remove: Pick<Todo, 'id'>;
+  update: Pick<Todo, 'id' | 'text' | 'done'>;
+  toggleAll: Pick<Todo, 'done'>;
+  clearCompleted: Pick<Todo, 'done'>;
+  setFilter: TodoFilter;
+}
+
 @Injectable()
 export class TodoService extends RxState<TodoState> {
   /**
-   * Actions
+   * UI actions
    */
-  private readonly _create$ = new Subject< Pick<Todo, 'text'>>();
-  private readonly _remove$ = new Subject<Pick<Todo, 'id'>>();
-  private readonly _update$ = new Subject<Pick<Todo, 'id' | 'text' | 'done'>>();
-  private readonly _toggleAll$ = new Subject<Pick<Todo, 'done'>>();
-  private readonly _clearCompleted$ = new Subject<Pick<Todo, 'done'>>();
-  private readonly _setFilter$ = new Subject<TodoFilter>();
+  private readonly commands = this.factory.create();
 
   /**
    * State
@@ -62,67 +61,68 @@ export class TodoService extends RxState<TodoState> {
     completedTodos: this._completedTodos$,
   }).pipe(stateful());
 
-  constructor() {
+  constructor(private readonly factory: RxActionFactory<Commands>) {
     super();
     this._initialize();
 
     /**
-     * Action handlers
+     * State handlers
      */
-    this.connect('filter', this._setFilter$);
-    this.connect('todos', this._create$, ({ todos }, { text }) =>
+    this.connect('filter', this.commands.setFilter$);
+    this.connect('todos', this.commands.create$, ({ todos }, { text }) =>
       insert(todos, {
         id: Math.round(Math.random() * 100000),
         text,
         done: false,
       })
     );
-    this.connect('todos', this._remove$, ({ todos }, { id }) =>
+    this.connect('todos', this.commands.remove$, ({ todos }, { id }) =>
       remove(todos, { id }, 'id')
     );
-    this.connect('todos', this._update$, ({ todos }, { id, text, done }) =>
-      update(todos, { id, text, done }, 'id')
+    this.connect(
+      'todos',
+      this.commands.update$,
+      ({ todos }, { id, text, done }) => update(todos, { id, text, done }, 'id')
     );
-    this.connect('todos', this._toggleAll$, ({ todos }, { done }) =>
+    this.connect('todos', this.commands.toggleAll$, ({ todos }, { done }) =>
       update(todos, { done }, () => true)
     );
-    this.connect('todos', this._clearCompleted$, ({ todos }, { done }) =>
-      remove(todos, { done }, 'done')
+    this.connect(
+      'todos',
+      this.commands.clearCompleted$,
+      ({ todos }, { done }) => remove(todos, { done }, 'done')
     );
 
     /**
-     * Side effect handler
+     * Side effects handlers
      */
     this.hold(this.select(), (state) => {
       window.localStorage.setItem('__state', JSON.stringify(state));
     });
   }
 
-  /**
-   * Exposed actions
-   */
   setFilter(filter: TodoFilter): void {
-    this._setFilter$.next(filter);
+    this.commands.setFilter(filter);
   }
 
   create(todo: Pick<Todo, 'text'>): void {
-    this._create$.next(todo);
+    this.commands.create(todo);
   }
 
   remove(todo: Pick<Todo, 'id'>): void {
-    this._remove$.next(todo);
+    this.commands.remove(todo);
   }
 
   update(todo: Todo): void {
-    this._update$.next(todo);
+    this.commands.update(todo);
   }
 
   toggleAll(todo: Pick<Todo, 'done'>): void {
-    this._toggleAll$.next(todo);
+    this.commands.toggleAll(todo);
   }
 
   clearCompleted(): void {
-    this._clearCompleted$.next({ done: true });
+    this.commands.clearCompleted({ done: true });
   }
 
   private _initialize(): void {
