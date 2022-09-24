@@ -186,6 +186,13 @@
   dependencies:
     tslib "^2.3.0"
 
+"@angular/forms@^14.2.3":
+  version "14.2.3"
+  resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-14.2.3.tgz#2a25b61377d82aec17e66069c07c49c2e655bed9"
+  integrity sha512-rL6adBHp51i3eDBecexrlrS+t+hlK6EnrEot/+Ec+DzVjJgw5VNJ4p2Ig72HPe0m+H0dcPkbQhlpb6cs677ISA==
+  dependencies:
+    tslib "^2.3.0"
+
 "@angular/platform-browser-dynamic@^14.2.3":
   version "14.2.3"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-14.2.3.tgz#2ec60e7d0d5670daeb15948b549711253a507543"

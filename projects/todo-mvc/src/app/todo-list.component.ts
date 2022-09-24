@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RxActionFactory } from '@rx-angular/state/actions';
 import { LetModule } from '@rx-angular/template/let';
 import { Todo } from './todo-state';
@@ -10,7 +11,7 @@ import { TodoService } from './todo.service';
   standalone: true,
   selector: 'app-todo-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, LetModule, TodoComponent],
+  imports: [CommonModule, FormsModule, LetModule, TodoComponent],
   providers: [TodoService, RxActionFactory],
   host: {
     class: 'todo-app',
@@ -27,9 +28,9 @@ import { TodoService } from './todo.service';
       <header class="header">
         <h1>Todo</h1>
         <input
-          #input
           class="new-todo"
           placeholder="What needs to be done?"
+          [(ngModel)]="input"
           (keyup.enter)="addTodo()"
         />
       </header>
@@ -87,19 +88,18 @@ import { TodoService } from './todo.service';
   `,
 })
 export class TodoListComponent {
-  @ViewChild('input')
-  input: ElementRef<HTMLInputElement>;
+  input = '';
 
   constructor(public readonly todoService: TodoService) {}
 
   addTodo(): void {
-    const text = this.input.nativeElement.value.trim();
+    const text = this.input.trim();
     if (text.length === 0) {
       return;
     }
 
     this.todoService.create({ text });
-    this.input.nativeElement.value = '';
+    this.input = '';
   }
 
   toggleAll(event: Event): void {
