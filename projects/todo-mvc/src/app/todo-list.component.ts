@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RxActionFactory } from '@rx-angular/state/actions';
 import { ForModule } from '@rx-angular/template/for';
 import { LetModule } from '@rx-angular/template/let';
@@ -11,7 +11,7 @@ import { TodoService } from './todo.service';
   standalone: true,
   selector: 'app-todo-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ForModule, FormsModule, LetModule, TodoComponent],
+  imports: [ForModule, ReactiveFormsModule, LetModule, TodoComponent],
   providers: [TodoService, RxActionFactory],
   host: {
     class: 'todo-app',
@@ -30,7 +30,7 @@ import { TodoService } from './todo.service';
         <input
           class="new-todo"
           placeholder="What needs to be done?"
-          [(ngModel)]="input"
+          [formControl]="input"
           (keyup.enter)="addTodo()"
         />
       </header>
@@ -88,18 +88,18 @@ import { TodoService } from './todo.service';
   `,
 })
 export class TodoListComponent {
-  input = '';
+  input = new FormControl('');
 
   constructor(public readonly todoService: TodoService) {}
 
   addTodo(): void {
-    const text = this.input.trim();
+    const text = this.input.value.trim();
     if (text.length === 0) {
       return;
     }
 
     this.todoService.create({ text });
-    this.input = '';
+    this.input.reset();
   }
 
   toggleAll(event: Event): void {
