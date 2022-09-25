@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RxActionFactory } from '@rx-angular/state/actions';
+import { ForModule } from '@rx-angular/template/for';
 import { LetModule } from '@rx-angular/template/let';
 import { Todo } from './todo-state';
 import { TodoComponent } from './todo.component';
@@ -11,7 +11,7 @@ import { TodoService } from './todo.service';
   standalone: true,
   selector: 'app-todo-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, LetModule, TodoComponent],
+  imports: [ForModule, FormsModule, LetModule, TodoComponent],
   providers: [TodoService, RxActionFactory],
   host: {
     class: 'todo-app',
@@ -44,7 +44,7 @@ import { TodoService } from './todo.service';
         <label for="toggle-all">Mark all as complete</label>
         <app-todo
           class="todo-list"
-          *ngFor="let todo of vm.filteredTodos; trackBy: trackById"
+          *rxFor="let todo of vm.filteredTodos; trackBy: trackById"
           [todo]="todo"
           (change)="todoService.update($event)"
           (remove)="todoService.remove($event)"
