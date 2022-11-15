@@ -9,12 +9,12 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/forms": "^14.2.3",
-    "@angular/common": "^14.2.3",
-    "@angular/compiler": "^14.2.3",
-    "@angular/core": "^14.2.3",
-    "@angular/platform-browser": "^14.2.3",
-    "@angular/platform-browser-dynamic": "^14.2.3",
+    "@angular/forms": "^14.2.10",
+    "@angular/common": "^14.2.10",
+    "@angular/compiler": "^14.2.10",
+    "@angular/core": "^14.2.10",
+    "@angular/platform-browser": "^14.2.10",
+    "@angular/platform-browser-dynamic": "^14.2.10",
     "@rx-angular/cdk": "1.0.0-rc.3",
     "@rx-angular/state": "1.7.0",
     "@rx-angular/template": "1.0.0-rc.4",
@@ -24,7 +24,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "14.2.9",
     "@angular/cli": "^14.2.9",
-    "@angular/compiler-cli": "^14.2.3",
+    "@angular/compiler-cli": "^14.2.10",
     "ts-node": "~8.3.0",
     "typescript": "~4.8.3",
     "webpack-bundle-analyzer": "^4.5.0"
