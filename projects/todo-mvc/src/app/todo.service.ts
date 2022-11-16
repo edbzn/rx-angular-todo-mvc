@@ -5,16 +5,7 @@ import { RxActionFactory } from '@rx-angular/state/actions';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { INITIAL_STATE, Todo, TodoFilter, TodoState } from './todo-state';
-
-interface Commands {
-  create: Pick<Todo, 'text'>;
-  remove: Pick<Todo, 'id'>;
-  update: Pick<Todo, 'id' | 'text' | 'done'>;
-  toggleAll: Pick<Todo, 'done'>;
-  clearCompleted: Pick<Todo, 'done'>;
-  setFilter: TodoFilter;
-}
+import { Commands, INITIAL_STATE, TodoState } from './todo-state';
 
 @Injectable()
 export class TodoService extends RxState<TodoState> {

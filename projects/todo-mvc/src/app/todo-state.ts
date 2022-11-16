@@ -11,6 +11,15 @@ export interface TodoState {
   filter: TodoFilter;
 }
 
+export interface Commands {
+  create: Pick<Todo, 'text'>;
+  remove: Pick<Todo, 'id'>;
+  update: Pick<Todo, 'id' | 'text' | 'done'>;
+  toggleAll: Pick<Todo, 'done'>;
+  clearCompleted: Pick<Todo, 'done'>;
+  setFilter: TodoFilter;
+}
+
 export const INITIAL_STATE: TodoState = {
   filter: 'all',
   todos: [
