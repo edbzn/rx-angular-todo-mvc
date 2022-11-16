@@ -46,8 +46,8 @@ import { TodoService } from './todo.service';
           class="todo-list"
           *rxFor="let todo of vm.filteredTodos; trackBy: trackById"
           [todo]="todo"
-          (change)="todoService.update($event)"
-          (remove)="todoService.remove($event)"
+          (change)="todoService.commands.update($event)"
+          (remove)="todoService.commands.remove($event)"
         ></app-todo>
       </section>
       <footer class="footer">
@@ -58,7 +58,7 @@ import { TodoService } from './todo.service';
           <li>
             <button
               [class.selected]="vm.filter === 'all'"
-              (click)="todoService.setFilter('all')"
+              (click)="todoService.commands.setFilter('all')"
             >
               {{ vm.allTodos.length }} All
             </button>
@@ -66,7 +66,7 @@ import { TodoService } from './todo.service';
           <li>
             <button
               [class.selected]="vm.filter === 'active'"
-              (click)="todoService.setFilter('active')"
+              (click)="todoService.commands.setFilter('active')"
             >
               {{ vm.activeTodos.length }} Active
             </button>
@@ -74,13 +74,13 @@ import { TodoService } from './todo.service';
           <li>
             <button
               [class.selected]="vm.filter === 'completed'"
-              (click)="todoService.setFilter('completed')"
+              (click)="todoService.commands.setFilter('completed')"
             >
               {{ vm.completedTodos.length }} Completed
             </button>
           </li>
         </ul>
-        <button class="clear-completed" (click)="todoService.clearCompleted()">
+        <button class="clear-completed" (click)="todoService.commands.clearCompleted()">
           Clear completed
         </button>
       </footer>
@@ -90,7 +90,7 @@ import { TodoService } from './todo.service';
 export class TodoListComponent {
   input = new FormControl('');
 
-  constructor(public readonly todoService: TodoService) {}
+  constructor(readonly todoService: TodoService) {}
 
   addTodo(): void {
     const text = this.input.value.trim();
@@ -98,12 +98,12 @@ export class TodoListComponent {
       return;
     }
 
-    this.todoService.create({ text });
+    this.todoService.commands.create({ text });
     this.input.reset();
   }
 
   toggleAll(event: Event): void {
-    this.todoService.toggleAll({
+    this.todoService.commands.toggleAll({
       done: (event.target as HTMLInputElement).checked,
     });
   }

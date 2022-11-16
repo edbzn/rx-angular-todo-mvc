@@ -18,23 +18,11 @@ interface Commands {
 
 @Injectable()
 export class TodoService extends RxState<TodoState> {
-  /**
-   * UI actions
-   */
-  private readonly commands = this.factory.create();
+  readonly #filter$ = this.select('filter');
 
-  /**
-   * State
-   */
-  private readonly _filter$ = this.select('filter');
-  private readonly _allTodos$ = this.select('todos');
+  readonly #allTodos$ = this.select('todos');
 
-  /**
-   * Derived state
-   */
-  private readonly _filteredTodos$ = this.select(
-    selectSlice(['filter', 'todos'])
-  ).pipe(
+  readonly #filteredTodos$ = this.select(selectSlice(['filter', 'todos'])).pipe(
     map(({ todos, filter }) =>
       todos.filter(({ done }) => {
         if (filter === 'all') return true;
@@ -43,31 +31,30 @@ export class TodoService extends RxState<TodoState> {
       })
     )
   );
-  private readonly _completedTodos$ = this._allTodos$.pipe(
+
+  readonly #completedTodos$ = this.#allTodos$.pipe(
     map((todos) => todos.filter((todo) => todo.done))
   );
-  private readonly _activeTodos$ = this._allTodos$.pipe(
+
+  readonly #activeTodos$ = this.#allTodos$.pipe(
     map((todos) => todos.filter((todo) => !todo.done))
   );
 
-  /**
-   * Exposed view model
-   */
+  readonly commands = this.factory.create();
+
   readonly vm$ = combineLatest({
-    filter: this._filter$,
-    allTodos: this._allTodos$,
-    activeTodos: this._activeTodos$,
-    filteredTodos: this._filteredTodos$,
-    completedTodos: this._completedTodos$,
+    filter: this.#filter$,
+    allTodos: this.#allTodos$,
+    activeTodos: this.#activeTodos$,
+    filteredTodos: this.#filteredTodos$,
+    completedTodos: this.#completedTodos$,
   }).pipe(stateful());
 
   constructor(private readonly factory: RxActionFactory<Commands>) {
     super();
+
     this._initialize();
 
-    /**
-     * State handlers
-     */
     this.connect('filter', this.commands.setFilter$);
     this.connect('todos', this.commands.create$, ({ todos }, { text }) =>
       insert(todos, {
@@ -90,39 +77,12 @@ export class TodoService extends RxState<TodoState> {
     this.connect(
       'todos',
       this.commands.clearCompleted$,
-      ({ todos }, { done }) => remove(todos, { done }, 'done')
+      ({ todos }) => remove(todos, { done: true }, 'done')
     );
 
-    /**
-     * Side effects handlers
-     */
     this.hold(this.select(), (state) => {
       window.localStorage.setItem('__state', JSON.stringify(state));
     });
-  }
-
-  setFilter(filter: TodoFilter): void {
-    this.commands.setFilter(filter);
-  }
-
-  create(todo: Pick<Todo, 'text'>): void {
-    this.commands.create(todo);
-  }
-
-  remove(todo: Pick<Todo, 'id'>): void {
-    this.commands.remove(todo);
-  }
-
-  update(todo: Todo): void {
-    this.commands.update(todo);
-  }
-
-  toggleAll(todo: Pick<Todo, 'done'>): void {
-    this.commands.toggleAll(todo);
-  }
-
-  clearCompleted(): void {
-    this.commands.clearCompleted({ done: true });
   }
 
   private _initialize(): void {
