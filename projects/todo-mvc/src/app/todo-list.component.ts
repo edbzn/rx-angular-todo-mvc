@@ -93,7 +93,7 @@ export class TodoListComponent {
   constructor(readonly todoService: TodoService) {}
 
   addTodo(): void {
-    const text = this.input.value.trim();
+    const text = (this.input.value ?? '').trim();
     if (text.length === 0) {
       return;
     }
@@ -108,7 +108,7 @@ export class TodoListComponent {
     });
   }
 
-  trackById(i, todo: Todo) {
+  trackById(index: number, todo: Todo) {
     return todo.id;
   }
 }

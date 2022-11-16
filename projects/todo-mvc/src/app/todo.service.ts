@@ -74,10 +74,8 @@ export class TodoService extends RxState<TodoState> {
     this.connect('todos', this.commands.toggleAll$, ({ todos }, { done }) =>
       update(todos, { done }, () => true)
     );
-    this.connect(
-      'todos',
-      this.commands.clearCompleted$,
-      ({ todos }) => remove(todos, { done: true }, 'done')
+    this.connect('todos', this.commands.clearCompleted$, ({ todos }) =>
+      remove(todos, { done: true }, 'done')
     );
 
     this.hold(this.select(), (state) => {
@@ -87,7 +85,9 @@ export class TodoService extends RxState<TodoState> {
 
   private _initialize(): void {
     if (window.localStorage.getItem('__state')) {
-      this.set(JSON.parse(window.localStorage.getItem('__state')) as TodoState);
+      this.set(
+        JSON.parse(window.localStorage.getItem('__state')!) as TodoState
+      );
     } else {
       this.set(INITIAL_STATE);
     }

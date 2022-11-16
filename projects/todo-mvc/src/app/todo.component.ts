@@ -1,17 +1,18 @@
 import { NgIf } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   Input,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { RxState } from '@rx-angular/state';
 import { LetModule } from '@rx-angular/template/let';
 import { asyncScheduler } from 'rxjs';
-import { filter, observeOn } from 'rxjs/operators';
+import { filter, observeOn, subscribeOn } from 'rxjs/operators';
 
 import { Todo } from './todo-state';
 
@@ -50,8 +51,8 @@ import { Todo } from './todo-state';
   `,
 })
 export class TodoComponent {
-  @ViewChild('input') input: ElementRef<HTMLInputElement>;
-  @ViewChild('toggle') toggle: ElementRef<HTMLInputElement>;
+  @ViewChild('input') input?: ElementRef<HTMLInputElement>;
+  @ViewChild('toggle') toggle?: ElementRef<HTMLInputElement>;
 
   @Input() set todo(todo: Todo) {
     this.state.set({ todo });
@@ -67,6 +68,7 @@ export class TodoComponent {
   readonly vm$ = this.state.select();
 
   constructor(
+    private readonly cd: ChangeDetectorRef,
     private readonly state: RxState<{ isEditing: boolean; todo: Todo }>
   ) {
     this.state.set({ isEditing: false });
@@ -76,7 +78,11 @@ export class TodoComponent {
       .pipe(filter(Boolean), observeOn(asyncScheduler));
 
     this.state.hold(isEditing$, () => {
-      this.input.nativeElement.focus();
+      if (this.input == null) {
+        this.cd.detectChanges();
+      }
+
+      this.input!.nativeElement.focus();
     });
   }
 
@@ -84,7 +90,7 @@ export class TodoComponent {
     this.state.set(({ todo }) => ({
       todo: {
         ...todo,
-        done: this.toggle.nativeElement.checked,
+        done: this.toggle!.nativeElement.checked,
       },
     }));
     this.change.emit(this.todo);
@@ -103,7 +109,7 @@ export class TodoComponent {
       isEditing: false,
       todo: {
         ...todo,
-        text: this.input.nativeElement.value,
+        text: this.input!.nativeElement.value,
       },
     }));
     this.change.emit(this.todo);
