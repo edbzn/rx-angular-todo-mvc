@@ -1,27 +1,34 @@
 import { Injectable } from '@angular/core';
 import { insert, remove, update } from '@rx-angular/cdk/transformations';
-import { RxState, selectSlice, stateful } from '@rx-angular/state';
+import { selectSlice, stateful } from '@rx-angular/state';
 import { RxActionFactory } from '@rx-angular/state/actions';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { injectRxState } from './rx-state';
 import { Commands, INITIAL_STATE, TodoState } from './todo-state';
 
+const id = () => Math.round(Math.random() * 100000);
+
 @Injectable()
-export class TodoService extends RxState<TodoState> {
-  readonly #filter$ = this.select('filter');
+export class TodoService {
+  readonly #state = injectRxState<TodoState>();
 
-  readonly #allTodos$ = this.select('todos');
+  readonly #filter$ = this.#state.select('filter');
 
-  readonly #filteredTodos$ = this.select(selectSlice(['filter', 'todos'])).pipe(
-    map(({ todos, filter }) =>
-      todos.filter(({ done }) => {
-        if (filter === 'all') return true;
-        if (filter === 'active') return !done;
-        if (filter === 'completed') return done;
-      })
-    )
-  );
+  readonly #allTodos$ = this.#state.select('todos');
+
+  readonly #filteredTodos$ = this.#state
+    .select(selectSlice(['filter', 'todos']))
+    .pipe(
+      map(({ todos, filter }) =>
+        todos.filter(({ done }) => {
+          if (filter === 'all') return true;
+          if (filter === 'active') return !done;
+          if (filter === 'completed') return done;
+        })
+      )
+    );
 
   readonly #completedTodos$ = this.#allTodos$.pipe(
     map((todos) => todos.filter((todo) => todo.done))
@@ -42,45 +49,45 @@ export class TodoService extends RxState<TodoState> {
   }).pipe(stateful());
 
   constructor(private readonly factory: RxActionFactory<Commands>) {
-    super();
+    this.#initialize();
 
-    this._initialize();
-
-    this.connect('filter', this.commands.setFilter$);
-    this.connect('todos', this.commands.create$, ({ todos }, { text }) =>
+    this.#state.connect('filter', this.commands.setFilter$);
+    this.#state.connect('todos', this.commands.create$, ({ todos }, { text }) =>
       insert(todos, {
-        id: Math.round(Math.random() * 100000),
+        id: id(),
         text,
         done: false,
       })
     );
-    this.connect('todos', this.commands.remove$, ({ todos }, { id }) =>
+    this.#state.connect('todos', this.commands.remove$, ({ todos }, { id }) =>
       remove(todos, { id }, 'id')
     );
-    this.connect(
+    this.#state.connect(
       'todos',
       this.commands.update$,
       ({ todos }, { id, text, done }) => update(todos, { id, text, done }, 'id')
     );
-    this.connect('todos', this.commands.toggleAll$, ({ todos }, { done }) =>
-      update(todos, { done }, () => true)
+    this.#state.connect(
+      'todos',
+      this.commands.toggleAll$,
+      ({ todos }, { done }) => update(todos, { done }, () => true)
     );
-    this.connect('todos', this.commands.clearCompleted$, ({ todos }) =>
+    this.#state.connect('todos', this.commands.clearCompleted$, ({ todos }) =>
       remove(todos, { done: true }, 'done')
     );
 
-    this.hold(this.select(), (state) => {
+    this.#state.hold(this.#state.select(), (state) => {
       window.localStorage.setItem('__state', JSON.stringify(state));
     });
   }
 
-  private _initialize(): void {
+  #initialize(): void {
     if (window.localStorage.getItem('__state')) {
-      this.set(
+      this.#state.set(
         JSON.parse(window.localStorage.getItem('__state')!) as TodoState
       );
     } else {
-      this.set(INITIAL_STATE);
+      this.#state.set(INITIAL_STATE);
     }
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { TodoListComponent } from './todo-list.component';
 
@@ -6,7 +6,8 @@ import { TodoListComponent } from './todo-list.component';
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <app-todo-list></app-todo-list>
+    <button (click)="toggle()" type="button">toggle</button>
+    <app-todo-list *ngIf="showApp"></app-todo-list>
     <footer>
       <strong>Angular Zoneless experiment</strong> using
       <code>
@@ -26,7 +27,15 @@ import { TodoListComponent } from './todo-list.component';
     </footer>
   `,
 })
-export class AppComponent {}
+export class AppComponent {
+  showApp = true;
+  cd = inject(ChangeDetectorRef)
+
+  toggle() {
+    this.showApp = !this.showApp;
+    this.cd.detectChanges()
+  }
+}
 
 @NgModule({
   declarations: [AppComponent],
