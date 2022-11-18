@@ -6,8 +6,7 @@ import { TodoListComponent } from './todo-list.component';
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <button (click)="toggle()" type="button">toggle</button>
-    <app-todo-list *ngIf="showApp"></app-todo-list>
+    <app-todo-list></app-todo-list>
     <footer>
       <strong>Angular Zoneless experiment</strong> using
       <code>
@@ -27,15 +26,7 @@ import { TodoListComponent } from './todo-list.component';
     </footer>
   `,
 })
-export class AppComponent {
-  showApp = true;
-  cd = inject(ChangeDetectorRef)
-
-  toggle() {
-    this.showApp = !this.showApp;
-    this.cd.detectChanges()
-  }
-}
+export class AppComponent {}
 
 @NgModule({
   declarations: [AppComponent],

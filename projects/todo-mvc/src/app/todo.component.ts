@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -11,8 +10,9 @@ import {
 } from '@angular/core';
 import { RxState } from '@rx-angular/state';
 import { LetModule } from '@rx-angular/template/let';
+import { IfModule } from '@rx-angular/template/if';
 import { asyncScheduler } from 'rxjs';
-import { filter, observeOn, subscribeOn } from 'rxjs/operators';
+import { filter, observeOn } from 'rxjs/operators';
 
 import { Todo } from './todo-state';
 
@@ -20,7 +20,7 @@ import { Todo } from './todo-state';
   standalone: true,
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, LetModule],
+  imports: [IfModule, LetModule],
   providers: [RxState],
   template: `
     <article
@@ -28,7 +28,7 @@ import { Todo } from './todo-state';
       *rxLet="vm$ as vm"
       [class]="{ completed: vm.todo.done, editing: vm.isEditing }"
     >
-      <div class="view" *ngIf="!vm.isEditing">
+      <div class="view" *rxIf="!vm.isEditing">
         <input
           #toggle
           class="toggle"
@@ -42,7 +42,7 @@ import { Todo } from './todo-state';
       <input
         #input
         class="edit"
-        *ngIf="vm.isEditing"
+        *rxIf="vm.isEditing"
         [value]="vm.todo.text"
         (blur)="updateText()"
         (keyup.enter)="updateText()"
