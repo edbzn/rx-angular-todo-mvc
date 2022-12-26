@@ -6,11 +6,11 @@ import {
   EventEmitter,
   Input,
   Output,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
 import { RxState } from '@rx-angular/state';
-import { LetModule } from '@rx-angular/template/let';
 import { IfModule } from '@rx-angular/template/if';
+import { LetModule } from '@rx-angular/template/let';
 import { asyncScheduler } from 'rxjs';
 import { filter, observeOn } from 'rxjs/operators';
 

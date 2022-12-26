@@ -15,9 +15,9 @@
     "@angular/core": "^15.0.0",
     "@angular/platform-browser": "^15.0.0",
     "@angular/platform-browser-dynamic": "^15.0.0",
-    "@rx-angular/cdk": "1.0.0-rc.3",
+    "@rx-angular/cdk": "1.0.0-rc.4",
     "@rx-angular/state": "1.7.0",
-    "@rx-angular/template": "1.0.0-rc.4",
+    "@rx-angular/template": "1.0.0-rc.5",
     "rxjs": "~7.4.0",
     "tslib": "^2.0.0"
   },
