@@ -13,4 +13,8 @@ export class TodoResource {
   getAll() {
     return this.#useQuery(['todos'], () => this.#http.get<Todo[]>(endpoint.toString()));
   }
+
+  create(todo: Pick<Todo, 'text'>) {
+    return this.#http.post<Todo[]>(endpoint.toString(), todo);
+  }
 }

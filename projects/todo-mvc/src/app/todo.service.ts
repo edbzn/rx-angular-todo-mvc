@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { selectResult } from '@ngneat/query';
-import { insert, remove, update } from '@rx-angular/cdk/transformations';
+import { remove, update } from '@rx-angular/cdk/transformations';
 import { selectSlice, stateful } from '@rx-angular/state';
 import { RxActionFactory } from '@rx-angular/state/actions';
 import { combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { exhaustMap, map } from 'rxjs/operators';
 
 import { injectRxState } from './rx-state';
 import { TodoResource } from './todo.resource';
@@ -88,12 +88,11 @@ export class TodoService {
         .result$.pipe(selectResult((result) => result.data ?? []))
     );
     this.#state.connect('filter', this.commands.setFilter$);
-    this.#state.connect('todos', this.commands.create$, ({ todos }, { text }) =>
-      insert(todos, {
-        id: id(),
-        text,
-        done: false,
-      })
+    this.#state.connect(
+      'todos',
+      this.commands.create$.pipe(
+        exhaustMap((todo) => this.todoResource.create(todo))
+      )
     );
     this.#state.connect('todos', this.commands.remove$, ({ todos }, { id }) =>
       remove(todos, { id }, 'id')
