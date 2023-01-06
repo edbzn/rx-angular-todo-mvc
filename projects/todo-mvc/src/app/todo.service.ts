@@ -37,11 +37,14 @@ export const INITIAL_STATE: TodoState = {
 @Injectable()
 export class TodoService {
   readonly #state = injectRxState<TodoState>();
-
   readonly #filter$ = this.#state.select('filter');
-
   readonly #allTodos$ = this.#state.select('todos');
-
+  readonly #completedTodos$ = this.#allTodos$.pipe(
+    map((todos) => todos.filter((todo) => todo.done))
+  );
+  readonly #activeTodos$ = this.#allTodos$.pipe(
+    map((todos) => todos.filter((todo) => !todo.done))
+  );
   readonly #filteredTodos$ = this.#state
     .select(selectSlice(['filter', 'todos']))
     .pipe(
@@ -54,15 +57,7 @@ export class TodoService {
       )
     );
 
-  readonly #completedTodos$ = this.#allTodos$.pipe(
-    map((todos) => todos.filter((todo) => todo.done))
-  );
-
-  readonly #activeTodos$ = this.#allTodos$.pipe(
-    map((todos) => todos.filter((todo) => !todo.done))
-  );
-
-  readonly commands = this.factory.create();
+  readonly actions = this.actionFactory.create();
 
   readonly vm$ = combineLatest({
     filter: this.#filter$,
@@ -73,28 +68,28 @@ export class TodoService {
   }).pipe(stateful());
 
   constructor(
-    private readonly factory: RxActionFactory<Commands>,
+    private readonly actionFactory: RxActionFactory<Commands>,
     private readonly todoResource: TodoResource
   ) {
     const getAll$ = this.todoResource
       .getAll()
       .pipe(map((todos) => ({ todos })));
-    const setFilter$ = this.commands.setFilter$.pipe(
+    const setFilter$ = this.actions.setFilter$.pipe(
       map((filter) => ({ filter }))
     );
-    const create$ = this.commands.create$.pipe(
+    const create$ = this.actions.create$.pipe(
       exhaustMap((todo) => this.todoResource.create(todo)),
       map((todos) => ({ todos }))
     );
-    const remove$ = this.commands.remove$.pipe(
+    const remove$ = this.actions.remove$.pipe(
       exhaustMap((todo) => this.todoResource.remove(todo)),
       map((todos) => ({ todos }))
     );
-    const update$ = this.commands.update$.pipe(
+    const update$ = this.actions.update$.pipe(
       exhaustMap((todo) => this.todoResource.update(todo)),
       map((todos) => ({ todos }))
     );
-    const toggleAll$ = this.commands.toggleAll$.pipe(
+    const toggleAll$ = this.actions.toggleAll$.pipe(
       withLatestFrom(this.#allTodos$),
       exhaustMap(([, todos]) =>
         forkJoin(
@@ -108,7 +103,7 @@ export class TodoService {
       ),
       map((todos) => ({ todos: todos.pop() ?? [] }))
     );
-    const clearCompleted$ = this.commands.clearCompleted$.pipe(
+    const clearCompleted$ = this.actions.clearCompleted$.pipe(
       withLatestFrom(this.#completedTodos$),
       exhaustMap(([, todos]) =>
         forkJoin(todos.map((todo) => this.todoResource.remove(todo)))

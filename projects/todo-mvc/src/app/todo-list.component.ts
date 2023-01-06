@@ -39,15 +39,15 @@ import { Todo, TodoService } from './todo.service';
           id="toggle-all"
           class="toggle-all"
           type="checkbox"
-          (click)="todoService.commands.toggleAll()"
+          (click)="todoService.actions.toggleAll()"
         />
         <label for="toggle-all">Mark all as complete</label>
         <app-todo
           class="todo-list"
           *rxFor="let todo of vm.filteredTodos; trackBy: trackById"
           [todo]="todo"
-          (change)="todoService.commands.update($event)"
-          (remove)="todoService.commands.remove($event)"
+          (change)="todoService.actions.update($event)"
+          (remove)="todoService.actions.remove($event)"
         ></app-todo>
       </section>
       <footer class="footer">
@@ -58,7 +58,7 @@ import { Todo, TodoService } from './todo.service';
           <li>
             <button
               [class.selected]="vm.filter === 'all'"
-              (click)="todoService.commands.setFilter('all')"
+              (click)="todoService.actions.setFilter('all')"
             >
               {{ vm.allTodos.length }} All
             </button>
@@ -66,7 +66,7 @@ import { Todo, TodoService } from './todo.service';
           <li>
             <button
               [class.selected]="vm.filter === 'active'"
-              (click)="todoService.commands.setFilter('active')"
+              (click)="todoService.actions.setFilter('active')"
             >
               {{ vm.activeTodos.length }} Active
             </button>
@@ -74,13 +74,13 @@ import { Todo, TodoService } from './todo.service';
           <li>
             <button
               [class.selected]="vm.filter === 'completed'"
-              (click)="todoService.commands.setFilter('completed')"
+              (click)="todoService.actions.setFilter('completed')"
             >
               {{ vm.completedTodos.length }} Completed
             </button>
           </li>
         </ul>
-        <button class="clear-completed" (click)="todoService.commands.clearCompleted()">
+        <button class="clear-completed" (click)="todoService.actions.clearCompleted()">
           Clear completed
         </button>
       </footer>
@@ -88,7 +88,7 @@ import { Todo, TodoService } from './todo.service';
   `,
 })
 export class TodoListComponent {
-  input = new FormControl('');
+  readonly input = new FormControl('');
 
   constructor(readonly todoService: TodoService) {}
 
@@ -98,7 +98,7 @@ export class TodoListComponent {
       return;
     }
 
-    this.todoService.commands.create({ text });
+    this.todoService.actions.create({ text });
     this.input.reset();
   }
 
