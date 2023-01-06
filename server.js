@@ -1,13 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const crypto = require("crypto");
 
 const app = express();
 
 const todos = [
-  { id: 1, text: "Task 1", done: false },
-  { id: 2, text: "Task 2", done: false },
-  { id: 3, text: "Task 3", done: false },
+  { id: crypto.randomUUID(), text: "Task 1", done: false },
+  { id: crypto.randomUUID(), text: "Task 2", done: false },
+  { id: crypto.randomUUID(), text: "Task 3", done: false },
 ];
 
 app.use(cors());
@@ -21,9 +22,34 @@ app.get("/todo", (req, res) => {
 app.post("/todo", (req, res) => {
   console.log("POST /todo");
   const text = req.body.text;
-  const todo = { id: todos.length + 1, text, done: false };
-  todos.push(todo);
+
+  const todo = { id: crypto.randomUUID(), text, done: false };
+  todos.unshift(todo);
+
   res.status(201).json(todos);
+});
+
+app.delete("/todo/:id", (req, res) => {
+  console.log("DELETE /todo");
+  const id = req.params.id;
+
+  const index = todos.findIndex((todo) => todo.id === id);
+  todos.splice(index, 1);
+
+  res.status(200).json(todos);
+});
+
+// endpoint to update a todo
+app.put("/todo/:id", (req, res) => {
+  console.log("PUT /todo");
+  const id = req.params.id;
+  const text = req.body.text;
+  const done = req.body.done;
+
+  const index = todos.findIndex((todo) => todo.id === id);
+  todos[index] = { id, text, done };
+
+  res.status(200).json(todos);
 });
 
 app.listen(3000, () => {

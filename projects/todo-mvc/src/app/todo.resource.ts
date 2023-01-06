@@ -17,4 +17,12 @@ export class TodoResource {
   create(todo: Pick<Todo, 'text'>) {
     return this.#http.post<Todo[]>(endpoint.toString(), todo);
   }
+
+  remove(todo: Pick<Todo, 'id'>) {
+    return this.#http.delete<Todo[]>(`${endpoint.toString()}/${todo.id}`);
+  }
+
+  update(todo: Pick<Todo, 'id' | 'text' | 'done'>) {
+    return this.#http.put<Todo[]>(`${endpoint.toString()}/${todo.id}`, todo);
+  }
 }

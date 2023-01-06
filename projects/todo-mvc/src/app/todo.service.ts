@@ -9,12 +9,10 @@ import { exhaustMap, map } from 'rxjs/operators';
 import { injectRxState } from './rx-state';
 import { TodoResource } from './todo.resource';
 
-const id = () => Math.round(Math.random() * 100000);
-
 export type TodoFilter = 'all' | 'completed' | 'active';
 
 export interface Todo {
-  id: number;
+  id: string;
   text: string;
   done: boolean;
 }
@@ -94,14 +92,16 @@ export class TodoService {
         exhaustMap((todo) => this.todoResource.create(todo))
       )
     );
-    this.#state.connect('todos', this.commands.remove$, ({ todos }, { id }) =>
-      remove(todos, { id }, 'id')
-    );
+    this.#state.connect('todos', this.commands.remove$.pipe(
+      exhaustMap((todo) => this.todoResource.remove(todo))
+    ));
     this.#state.connect(
       'todos',
-      this.commands.update$,
-      ({ todos }, { id, text, done }) => update(todos, { id, text, done }, 'id')
+      this.commands.update$.pipe(
+        exhaustMap((todo) => this.todoResource.update(todo))
+      ),
     );
+
     this.#state.connect(
       'todos',
       this.commands.toggleAll$,
@@ -110,9 +110,5 @@ export class TodoService {
     this.#state.connect('todos', this.commands.clearCompleted$, ({ todos }) =>
       remove(todos, { done: true }, 'done')
     );
-
-    this.#state.hold(this.#state.select(), (state) => {
-      window.localStorage.setItem('__state', JSON.stringify(state));
-    });
   }
 }
