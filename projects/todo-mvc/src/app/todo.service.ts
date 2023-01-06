@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { selectResult } from '@ngneat/query';
 import { insert, remove, update } from '@rx-angular/cdk/transformations';
 import { selectSlice, stateful } from '@rx-angular/state';
 import { RxActionFactory } from '@rx-angular/state/actions';
@@ -6,9 +7,36 @@ import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { injectRxState } from './rx-state';
-import { Commands, INITIAL_STATE, TodoState } from './todo-state';
+import { TodoResource } from './todo.resource';
 
 const id = () => Math.round(Math.random() * 100000);
+
+export type TodoFilter = 'all' | 'completed' | 'active';
+
+export interface Todo {
+  id: number;
+  text: string;
+  done: boolean;
+}
+
+export interface TodoState {
+  todos: Todo[];
+  filter: TodoFilter;
+}
+
+export interface Commands {
+  create: Pick<Todo, 'text'>;
+  remove: Pick<Todo, 'id'>;
+  update: Pick<Todo, 'id' | 'text' | 'done'>;
+  toggleAll: Pick<Todo, 'done'>;
+  clearCompleted: Pick<Todo, 'done'>;
+  setFilter: TodoFilter;
+}
+
+export const INITIAL_STATE: TodoState = {
+  filter: 'all',
+  todos: [],
+};
 
 @Injectable()
 export class TodoService {
@@ -48,9 +76,17 @@ export class TodoService {
     completedTodos: this.#completedTodos$,
   }).pipe(stateful());
 
-  constructor(private readonly factory: RxActionFactory<Commands>) {
-    this.#initialize();
-
+  constructor(
+    private readonly factory: RxActionFactory<Commands>,
+    private readonly todoResource: TodoResource
+  ) {
+    this.#state.set(INITIAL_STATE);
+    this.#state.connect(
+      'todos',
+      this.todoResource
+        .getAll()
+        .result$.pipe(selectResult((result) => result.data ?? []))
+    );
     this.#state.connect('filter', this.commands.setFilter$);
     this.#state.connect('todos', this.commands.create$, ({ todos }, { text }) =>
       insert(todos, {
@@ -79,15 +115,5 @@ export class TodoService {
     this.#state.hold(this.#state.select(), (state) => {
       window.localStorage.setItem('__state', JSON.stringify(state));
     });
-  }
-
-  #initialize(): void {
-    if (window.localStorage.getItem('__state')) {
-      this.#state.set(
-        JSON.parse(window.localStorage.getItem('__state')!) as TodoState
-      );
-    } else {
-      this.#state.set(INITIAL_STATE);
-    }
   }
 }

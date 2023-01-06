@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { RxState } from './rx-state';
 import { RxActionFactory } from '@rx-angular/state/actions';
 import { ForModule } from '@rx-angular/template/for';
 import { LetModule } from '@rx-angular/template/let';
-import { Todo } from './todo-state';
+import { RxState } from './rx-state';
 import { TodoComponent } from './todo.component';
-import { TodoService } from './todo.service';
+import { Todo, TodoService } from './todo.service';
 
 @Component({
   standalone: true,

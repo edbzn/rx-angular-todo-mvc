@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { TodoListComponent } from './todo-list.component';
 
@@ -30,7 +31,7 @@ export class AppComponent {}
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, TodoListComponent],
+  imports: [BrowserModule, TodoListComponent, HttpClientModule],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
