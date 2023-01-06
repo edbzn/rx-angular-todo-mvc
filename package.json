@@ -5,7 +5,7 @@
     "ng": "ng",
     "start:client": "ng serve",
     "start:server": "nodemon server.js",
-    "start": "concurrently \"yarn start:server\" \"yarn start\"",
+    "start": "concurrently \"yarn start:server\" \"yarn start:client\"",
     "build": "ng build",
     "analyze": "ng run todo-mvc:build:development --stats-json && webpack-bundle-analyzer dist/todo-mvc/stats.json"
   },

@@ -6,9 +6,8 @@ const crypto = require("crypto");
 const app = express();
 
 const todos = [
-  { id: crypto.randomUUID(), text: "Task 1", done: false },
-  { id: crypto.randomUUID(), text: "Task 2", done: false },
-  { id: crypto.randomUUID(), text: "Task 3", done: false },
+  { id: crypto.randomUUID(), text: "Pay bills", done: true },
+  { id: crypto.randomUUID(), text: "Call mom", done: false },
 ];
 
 app.use(cors());
@@ -39,7 +38,6 @@ app.delete("/todo/:id", (req, res) => {
   res.status(200).json(todos);
 });
 
-// endpoint to update a todo
 app.put("/todo/:id", (req, res) => {
   console.log("PUT /todo");
   const id = req.params.id;
