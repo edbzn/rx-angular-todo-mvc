@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { selectResult } from '@ngneat/query';
-import { remove, update } from '@rx-angular/cdk/transformations';
 import { selectSlice, stateful } from '@rx-angular/state';
 import { RxActionFactory } from '@rx-angular/state/actions';
-import { combineLatest } from 'rxjs';
-import { exhaustMap, map } from 'rxjs/operators';
+import { combineLatest, forkJoin } from 'rxjs';
+import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
 
 import { injectRxState } from './rx-state';
 import { TodoResource } from './todo.resource';
@@ -26,8 +25,8 @@ export interface Commands {
   create: Pick<Todo, 'text'>;
   remove: Pick<Todo, 'id'>;
   update: Pick<Todo, 'id' | 'text' | 'done'>;
-  toggleAll: Pick<Todo, 'done'>;
-  clearCompleted: Pick<Todo, 'done'>;
+  toggleAll: void;
+  clearCompleted: void;
   setFilter: TodoFilter;
 }
 
@@ -92,23 +91,44 @@ export class TodoService {
         exhaustMap((todo) => this.todoResource.create(todo))
       )
     );
-    this.#state.connect('todos', this.commands.remove$.pipe(
-      exhaustMap((todo) => this.todoResource.remove(todo))
-    ));
+    this.#state.connect(
+      'todos',
+      this.commands.remove$.pipe(
+        exhaustMap((todo) => this.todoResource.remove(todo))
+      )
+    );
     this.#state.connect(
       'todos',
       this.commands.update$.pipe(
         exhaustMap((todo) => this.todoResource.update(todo))
-      ),
+      )
     );
-
     this.#state.connect(
       'todos',
-      this.commands.toggleAll$,
-      ({ todos }, { done }) => update(todos, { done }, () => true)
+      this.commands.toggleAll$.pipe(
+        withLatestFrom(this.#allTodos$),
+        exhaustMap(([, todos]) =>
+          forkJoin(
+            todos.map((todo) =>
+              this.todoResource.update({
+                ...todo,
+                done: todos.every(({ done }) => !done),
+              })
+            )
+          )
+        ),
+        map((todos) => todos.pop() ?? [])
+      )
     );
-    this.#state.connect('todos', this.commands.clearCompleted$, ({ todos }) =>
-      remove(todos, { done: true }, 'done')
+    this.#state.connect(
+      'todos',
+      this.commands.clearCompleted$.pipe(
+        withLatestFrom(this.#completedTodos$),
+        exhaustMap(([, todos]) =>
+          forkJoin(todos.map((todo) => this.todoResource.remove(todo)))
+        ),
+        map((todos) => todos.pop() ?? [])
+      )
     );
   }
 }

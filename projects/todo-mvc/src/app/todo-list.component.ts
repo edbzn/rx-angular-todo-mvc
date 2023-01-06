@@ -39,7 +39,7 @@ import { Todo, TodoService } from './todo.service';
           id="toggle-all"
           class="toggle-all"
           type="checkbox"
-          (click)="toggleAll($event)"
+          (click)="todoService.commands.toggleAll()"
         />
         <label for="toggle-all">Mark all as complete</label>
         <app-todo
@@ -100,12 +100,6 @@ export class TodoListComponent {
 
     this.todoService.commands.create({ text });
     this.input.reset();
-  }
-
-  toggleAll(event: Event): void {
-    this.todoService.commands.toggleAll({
-      done: (event.target as HTMLInputElement).checked,
-    });
   }
 
   trackById(index: number, todo: Todo) {
