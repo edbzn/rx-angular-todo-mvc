@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { selectResult } from '@ngneat/query';
 import { selectSlice, stateful } from '@rx-angular/state';
 import { RxActionFactory } from '@rx-angular/state/actions';
 import { combineLatest, forkJoin } from 'rxjs';
@@ -80,9 +79,7 @@ export class TodoService {
     this.#state.set(INITIAL_STATE);
     this.#state.connect(
       'todos',
-      this.todoResource
-        .getAll()
-        .result$.pipe(selectResult((result) => result.data ?? []))
+      this.todoResource.getAll()
     );
     this.#state.connect('filter', this.commands.setFilter$);
     this.#state.connect(
