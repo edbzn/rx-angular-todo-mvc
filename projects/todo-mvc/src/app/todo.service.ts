@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { selectSlice, stateful } from '@rx-angular/state';
-import { RxActionFactory } from '@rx-angular/state/actions';
+import { stateful } from '@rx-angular/state';
 import { combineLatest, forkJoin, merge } from 'rxjs';
 import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
 
-import { injectRxState } from './rx-state';
+import { injectRxActionFactory, injectRxState } from './inject-functions';
 import { TodoResource } from './todo.resource';
 
 export type TodoFilter = 'all' | 'completed' | 'active';
@@ -20,7 +19,7 @@ export interface TodoState {
   filter: TodoFilter;
 }
 
-export interface Commands {
+export interface Actions {
   create: Pick<Todo, 'text'>;
   remove: Pick<Todo, 'id'>;
   update: Pick<Todo, 'id' | 'text' | 'done'>;
@@ -45,32 +44,27 @@ export class TodoService {
   readonly #activeTodos$ = this.#allTodos$.pipe(
     map((todos) => todos.filter((todo) => !todo.done))
   );
-  readonly #filteredTodos$ = this.#state
-    .select(selectSlice(['filter', 'todos']))
-    .pipe(
-      map(({ todos, filter }) =>
-        todos.filter(({ done }) => {
-          if (filter === 'all') return true;
-          if (filter === 'active') return !done;
-          if (filter === 'completed') return done;
-        })
-      )
-    );
+  readonly filteredTodos$ = this.#state.select(
+    ['filter', 'todos'],
+    ({ todos, filter }) =>
+      todos.filter(({ done }) => {
+        if (filter === 'active') return !done;
+        if (filter === 'completed') return done;
+        return true;
+      })
+  );
 
-  readonly actions = this.actionFactory.create();
+  readonly actions = injectRxActionFactory<Actions>().create();
 
   readonly vm$ = combineLatest({
     filter: this.#filter$,
     allTodos: this.#allTodos$,
     activeTodos: this.#activeTodos$,
-    filteredTodos: this.#filteredTodos$,
+    filteredTodos: this.filteredTodos$,
     completedTodos: this.#completedTodos$,
   }).pipe(stateful());
 
-  constructor(
-    private readonly actionFactory: RxActionFactory<Commands>,
-    private readonly todoResource: TodoResource
-  ) {
+  constructor(private readonly todoResource: TodoResource) {
     const getAll$ = this.todoResource
       .getAll()
       .pipe(map((todos) => ({ todos })));
@@ -101,14 +95,14 @@ export class TodoService {
           )
         )
       ),
-      map((todos) => ({ todos: todos.pop() ?? [] }))
+      map((updates) => ({ todos: updates.at(-1) }))
     );
     const clearCompleted$ = this.actions.clearCompleted$.pipe(
       withLatestFrom(this.#completedTodos$),
       exhaustMap(([, todos]) =>
         forkJoin(todos.map((todo) => this.todoResource.remove(todo)))
       ),
-      map((todos) => ({ todos: todos.pop() ?? [] }))
+      map((updates) => ({ todos: updates.at(-1) }))
     );
 
     this.#state.set(INITIAL_STATE);

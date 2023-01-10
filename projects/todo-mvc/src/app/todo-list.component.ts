@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { RxActionFactory } from '@rx-angular/state/actions';
 import { ForModule } from '@rx-angular/template/for';
 import { LetModule } from '@rx-angular/template/let';
-import { RxState } from './rx-state';
 import { TodoComponent } from './todo.component';
 import { Todo, TodoService } from './todo.service';
 
@@ -12,7 +10,7 @@ import { Todo, TodoService } from './todo.service';
   selector: 'app-todo-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ForModule, ReactiveFormsModule, LetModule, TodoComponent],
-  providers: [TodoService, RxActionFactory, RxState],
+  providers: [TodoService],
   host: {
     class: 'todo-app',
   },
@@ -44,7 +42,7 @@ import { Todo, TodoService } from './todo.service';
         <label for="toggle-all">Mark all as complete</label>
         <app-todo
           class="todo-list"
-          *rxFor="let todo of vm.filteredTodos; trackBy: trackById"
+          *rxFor="let todo of todoService.filteredTodos$; trackBy: trackById"
           [todo]="todo"
           (change)="todoService.actions.update($event)"
           (remove)="todoService.actions.remove($event)"

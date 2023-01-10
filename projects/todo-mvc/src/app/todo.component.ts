@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -8,41 +9,38 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { RxState } from '@rx-angular/state';
-import { IfModule } from '@rx-angular/template/if';
+import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
+import { RxState, select } from '@rx-angular/state';
 import { LetModule } from '@rx-angular/template/let';
-import { asyncScheduler } from 'rxjs';
-import { filter, observeOn } from 'rxjs/operators';
 import { Todo } from './todo.service';
 
 @Component({
   standalone: true,
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IfModule, LetModule],
+  imports: [NgIf, LetModule],
   providers: [RxState],
   template: `
     <article
       class="todo"
-      *rxLet="vm$ as vm"
-      [class]="{ completed: vm.todo.done, editing: vm.isEditing }"
+      [class]="{ completed: todo.done, editing: isEditing }"
     >
-      <div class="view" *rxIf="!vm.isEditing">
+      <div class="view" *ngIf="!isEditing">
         <input
           #toggle
           class="toggle"
           type="checkbox"
-          [checked]="vm.todo.done"
+          [checked]="todo.done"
           (input)="toggleDone()"
         />
-        <label (dblclick)="edit()">{{ vm.todo.text }}</label>
+        <label (dblclick)="edit()">{{ todo.text }}</label>
         <button class="destroy" (click)="destroy()"></button>
       </div>
       <input
         #input
         class="edit"
-        *rxIf="vm.isEditing"
-        [value]="vm.todo.text"
+        *ngIf="isEditing"
+        [value]="todo.text"
         (blur)="updateText()"
         (keyup.enter)="updateText()"
       />
@@ -61,28 +59,32 @@ export class TodoComponent {
     return this.state.get('todo');
   }
 
+  get isEditing(): boolean {
+    return this.state.get('isEditing');
+  }
+
   @Output() remove = new EventEmitter<Pick<Todo, 'id'>>();
   @Output() change = new EventEmitter<Todo>();
 
-  readonly vm$ = this.state.select();
-
   constructor(
     private readonly cd: ChangeDetectorRef,
-    private readonly state: RxState<{ isEditing: boolean; todo: Todo }>
+    private readonly state: RxState<{ isEditing: boolean; todo: Todo }>,
+    private readonly strategyProvider: RxStrategyProvider
   ) {
     this.state.set({ isEditing: false });
 
-    const isEditing$ = this.state
-      .select('isEditing')
-      .pipe(filter(Boolean), observeOn(asyncScheduler));
-
-    this.state.hold(isEditing$, () => {
-      if (this.input == null) {
+    const isEditing$ = this.state.$.pipe(
+      select('isEditing'),
+      this.strategyProvider.scheduleWith((isEditing) => {
         this.cd.detectChanges();
-      }
 
-      this.input!.nativeElement.focus();
-    });
+        if (isEditing) {
+          this.input!.nativeElement.focus();
+        }
+      })
+    );
+
+    this.state.hold(isEditing$);
   }
 
   toggleDone(): void {
