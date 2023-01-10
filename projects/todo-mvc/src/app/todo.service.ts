@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { stateful } from '@rx-angular/state';
 import { combineLatest, forkJoin, merge } from 'rxjs';
 import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
@@ -35,6 +35,7 @@ export const INITIAL_STATE: TodoState = {
 
 @Injectable()
 export class TodoService {
+  readonly #todoResource = inject(TodoResource)
   readonly #state = injectRxState<TodoState>();
   readonly #filter$ = this.#state.select('filter');
   readonly #allTodos$ = this.#state.select('todos');
@@ -44,6 +45,7 @@ export class TodoService {
   readonly #activeTodos$ = this.#allTodos$.pipe(
     map((todos) => todos.filter((todo) => !todo.done))
   );
+
   readonly filteredTodos$ = this.#state.select(
     ['filter', 'todos'],
     ({ todos, filter }) =>
@@ -54,8 +56,6 @@ export class TodoService {
       })
   );
 
-  readonly actions = injectRxActionFactory<Actions>().create();
-
   readonly vm$ = combineLatest({
     filter: this.#filter$,
     allTodos: this.#allTodos$,
@@ -64,23 +64,25 @@ export class TodoService {
     completedTodos: this.#completedTodos$,
   }).pipe(stateful());
 
-  constructor(private readonly todoResource: TodoResource) {
-    const getAll$ = this.todoResource
+  readonly actions = injectRxActionFactory<Actions>().create();
+
+  constructor() {
+    const getAll$ = this.#todoResource
       .getAll()
       .pipe(map((todos) => ({ todos })));
     const setFilter$ = this.actions.setFilter$.pipe(
       map((filter) => ({ filter }))
     );
     const create$ = this.actions.create$.pipe(
-      exhaustMap((todo) => this.todoResource.create(todo)),
+      exhaustMap((todo) => this.#todoResource.create(todo)),
       map((todos) => ({ todos }))
     );
     const remove$ = this.actions.remove$.pipe(
-      exhaustMap((todo) => this.todoResource.remove(todo)),
+      exhaustMap((todo) => this.#todoResource.remove(todo)),
       map((todos) => ({ todos }))
     );
     const update$ = this.actions.update$.pipe(
-      exhaustMap((todo) => this.todoResource.update(todo)),
+      exhaustMap((todo) => this.#todoResource.update(todo)),
       map((todos) => ({ todos }))
     );
     const toggleAll$ = this.actions.toggleAll$.pipe(
@@ -88,7 +90,7 @@ export class TodoService {
       exhaustMap(([, todos]) =>
         forkJoin(
           todos.map((todo) =>
-            this.todoResource.update({
+            this.#todoResource.update({
               ...todo,
               done: todos.every(({ done }) => !done),
             })
@@ -100,7 +102,7 @@ export class TodoService {
     const clearCompleted$ = this.actions.clearCompleted$.pipe(
       withLatestFrom(this.#completedTodos$),
       exhaustMap(([, todos]) =>
-        forkJoin(todos.map((todo) => this.todoResource.remove(todo)))
+        forkJoin(todos.map((todo) => this.#todoResource.remove(todo)))
       ),
       map((updates) => ({ todos: updates.at(-1) }))
     );
