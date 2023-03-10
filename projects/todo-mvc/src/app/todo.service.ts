@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { stateful } from '@rx-angular/state';
+import { stateful } from '@rx-angular/state/selections';
 import { combineLatest, forkJoin, merge } from 'rxjs';
 import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
 

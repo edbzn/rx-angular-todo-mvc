@@ -10,7 +10,8 @@ import {
   ViewChild
 } from '@angular/core';
 import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
-import { RxState, select } from '@rx-angular/state';
+import { RxState } from '@rx-angular/state';
+import { select } from '@rx-angular/state/selections';
 import { LetModule } from '@rx-angular/template/let';
 import { Todo } from './todo.service';
 
