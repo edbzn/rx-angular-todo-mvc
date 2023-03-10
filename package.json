@@ -26,8 +26,8 @@
     "tslib": "^2.0.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "15.0.0",
-    "@angular/cli": "^15.0.0",
+    "@angular-devkit/build-angular": "15.2.2",
+    "@angular/cli": "^15.2.2",
     "@angular/compiler-cli": "^15.0.0",
     "concurrently": "^7.6.0",
     "nodemon": "^2.0.20",
