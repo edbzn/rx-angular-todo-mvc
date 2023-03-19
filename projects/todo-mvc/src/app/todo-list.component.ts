@@ -44,7 +44,7 @@ import { Todo, TodoService } from './todo.service';
         <app-todo
           class="todo-list"
           *rxFor="let todo of todoService.filteredTodos$; trackBy: trackById; let i = index"
-          [attrs.data-uf]="i"
+          [attr.data-uf]="i"
           [todo]="todo"
           (change)="todoService.actions.update($event)"
           (remove)="todoService.actions.remove($event)"
