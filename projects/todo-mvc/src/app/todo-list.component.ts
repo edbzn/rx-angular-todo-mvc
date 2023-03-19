@@ -26,6 +26,7 @@ import { Todo, TodoService } from './todo.service';
       <header class="header">
         <h1>Todo</h1>
         <input
+          data-uf="new-todo"
           class="new-todo"
           placeholder="What needs to be done?"
           [formControl]="input"
@@ -42,7 +43,8 @@ import { Todo, TodoService } from './todo.service';
         <label for="toggle-all">Mark all as complete</label>
         <app-todo
           class="todo-list"
-          *rxFor="let todo of todoService.filteredTodos$; trackBy: trackById"
+          *rxFor="let todo of todoService.filteredTodos$; trackBy: trackById; let i = index"
+          [attrs.data-uf]="i"
           [todo]="todo"
           (change)="todoService.actions.update($event)"
           (remove)="todoService.actions.remove($event)"

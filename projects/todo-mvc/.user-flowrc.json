@@ -1,0 +1,14 @@
+{
+  "collect": {
+    "url": "http://localhost:4200",
+    "ufPath": "./projects/todo-mvc/src/user-flows",
+    "serveCommand": "npm run start",
+    "awaitServeStdout": "Angular Live Development"
+  },
+  "persist": {
+    "outPath": "./projects/todo-mvc/src/measures",
+    "format": [
+      "md"
+    ]
+  }
+}
