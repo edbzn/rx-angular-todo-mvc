@@ -18,11 +18,10 @@ const listBudgets = readBudgets(
 const interactions: UserFlowInteractionsFn = async (
   ctx: UserFlowContext
 ): Promise<any> => {
-  const { flow } = ctx;
-  const url = `http://localhost:4200/`;
+  const { flow, collectOptions } = ctx;
   const todoList = new TodoListUfo(ctx);
 
-  await flow.navigate(url, {
+  await flow.navigate(collectOptions.url, {
     stepName: '🧭 Initial navigation',
     config: {
       extends: 'lighthouse:default',
@@ -44,8 +43,6 @@ const interactions: UserFlowInteractionsFn = async (
   await flow.snapshot({
     stepName: '✔ Add new todo done',
   });
-
-  return Promise.resolve();
 };
 
 const userFlowProvider: UserFlowProvider = {
