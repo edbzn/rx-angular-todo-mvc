@@ -19,7 +19,7 @@ const interactions: UserFlowInteractionsFn = async (
   ctx: UserFlowContext
 ): Promise<any> => {
   const { flow } = ctx;
-  const url = `/`;
+  const url = `http://localhost:4200/`;
   const todoList = new TodoListUfo(ctx);
 
   await flow.navigate(url, {
