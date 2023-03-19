@@ -36,11 +36,11 @@ const interactions: UserFlowInteractionsFn = async (
   await flow.snapshot({
     stepName: '✔ Initial navigation done',
   });
-  await flow.startTimeSpan({
+  await flow.startTimespan({
     stepName: '🧭 Add new todo',
   });
   await todoList.createNewTodo(2, 'Do my homework');
-  await flow.endTimeSpan();
+  await flow.endTimespan();
   await flow.snapshot({
     stepName: '✔ Add new todo done',
   });
