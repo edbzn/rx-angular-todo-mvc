@@ -17,6 +17,7 @@
     "@angular/forms": "^16.0.0-next.3",
     "@angular/platform-browser": "^16.0.0-next.3",
     "@angular/platform-browser-dynamic": "^16.0.0-next.3",
+    "@jscutlery/operators": "^0.2.2",
     "@rx-angular/cdk": "2.0.0",
     "@rx-angular/state": "2.0.0",
     "@rx-angular/template": "2.0.0",
