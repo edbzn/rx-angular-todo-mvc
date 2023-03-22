@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { stateful } from '@rx-angular/state/selections';
-import { combineLatest, forkJoin, merge } from 'rxjs';
+import { forkJoin, merge } from 'rxjs';
 import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
 
 import { injectRxActionFactory, injectRxState } from './inject-functions';
@@ -28,24 +27,23 @@ export interface Actions {
   setFilter: TodoFilter;
 }
 
-export const INITIAL_STATE: TodoState = {
+export const INITIAL_STATE: Partial<TodoState> = {
   filter: 'all',
-  todos: [],
 };
 
 @Injectable()
 export class TodoService {
   readonly #todoResource = inject(TodoResource)
   readonly #state = injectRxState<TodoState>();
-  readonly #filter$ = this.#state.select('filter');
-  readonly #allTodos$ = this.#state.select('todos');
-  readonly #completedTodos$ = this.#allTodos$.pipe(
+
+  readonly filter$ = this.#state.select('filter');
+  readonly allTodos$ = this.#state.select('todos');
+  readonly completedTodos$ = this.allTodos$.pipe(
     map((todos) => todos.filter((todo) => todo.done))
   );
-  readonly #activeTodos$ = this.#allTodos$.pipe(
+  readonly activeTodos$ = this.allTodos$.pipe(
     map((todos) => todos.filter((todo) => !todo.done))
   );
-
   readonly filteredTodos$ = this.#state.select(
     ['filter', 'todos'],
     ({ todos, filter }) =>
@@ -55,14 +53,6 @@ export class TodoService {
         return true;
       })
   );
-
-  readonly vm$ = combineLatest({
-    filter: this.#filter$,
-    allTodos: this.#allTodos$,
-    activeTodos: this.#activeTodos$,
-    filteredTodos: this.filteredTodos$,
-    completedTodos: this.#completedTodos$,
-  }).pipe(stateful());
 
   readonly actions = injectRxActionFactory<Actions>().create();
 
@@ -86,7 +76,7 @@ export class TodoService {
       map((todos) => ({ todos }))
     );
     const toggleAll$ = this.actions.toggleAll$.pipe(
-      withLatestFrom(this.#allTodos$),
+      withLatestFrom(this.allTodos$),
       exhaustMap(([, todos]) =>
         forkJoin(
           todos.map((todo) =>
@@ -100,7 +90,7 @@ export class TodoService {
       map((updates) => ({ todos: updates.at(-1) }))
     );
     const clearCompleted$ = this.actions.clearCompleted$.pipe(
-      withLatestFrom(this.#completedTodos$),
+      withLatestFrom(this.completedTodos$),
       exhaustMap(([, todos]) =>
         forkJoin(todos.map((todo) => this.#todoResource.remove(todo)))
       ),
