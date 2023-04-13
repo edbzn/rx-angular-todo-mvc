@@ -12,14 +12,14 @@ import {
 import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
 import { RxState } from '@rx-angular/state';
 import { select } from '@rx-angular/state/selections';
-import { LetModule } from '@rx-angular/template/let';
+import { LetDirective } from '@rx-angular/template/let';
 import { Todo } from './todo.service';
 
 @Component({
   standalone: true,
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, LetModule],
+  imports: [NgIf, LetDirective],
   providers: [RxState],
   template: `
     <article

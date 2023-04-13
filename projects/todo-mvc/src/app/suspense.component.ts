@@ -7,15 +7,15 @@ import {
   TemplateRef
 } from '@angular/core';
 import { Suspense, suspensify } from '@jscutlery/operators';
-import { IfModule } from '@rx-angular/template/if';
-import { PushModule } from '@rx-angular/template/push';
+import { RxIf } from '@rx-angular/template/if';
+import { PushPipe } from '@rx-angular/template/push';
 import { EMPTY, Observable } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-suspense',
   standalone: true,
-  imports: [PushModule, IfModule, NgTemplateOutlet],
+  imports: [PushPipe, RxIf, NgTemplateOutlet],
   styles: [
     `
       :host {

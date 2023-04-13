@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ForModule } from '@rx-angular/template/for';
-import { LetModule } from '@rx-angular/template/let';
+import { RxFor } from '@rx-angular/template/for';
+import { LetDirective } from '@rx-angular/template/let';
 import { SuspenseComponent } from './suspense.component';
 import { TodoComponent } from './todo.component';
 import { Todo, TodoService } from './todo.service';
@@ -11,9 +11,9 @@ import { Todo, TodoService } from './todo.service';
   selector: 'app-todo-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ForModule,
+    RxFor,
     ReactiveFormsModule,
-    LetModule,
+    LetDirective,
     TodoComponent,
     SuspenseComponent,
   ],
