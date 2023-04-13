@@ -1,11 +1,11 @@
-import { HttpClientModule } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TodoListComponent } from './todo-list.component';
 
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [TodoListComponent],
   template: `
     <app-todo-list></app-todo-list>
     <footer>
@@ -28,10 +28,3 @@ import { TodoListComponent } from './todo-list.component';
   `,
 })
 export class AppComponent {}
-
-@NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, TodoListComponent, HttpClientModule],
-  bootstrap: [AppComponent],
-})
-export class AppModule {}
