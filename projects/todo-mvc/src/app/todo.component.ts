@@ -52,7 +52,8 @@ export class TodoComponent {
   @ViewChild('input') input?: ElementRef<HTMLInputElement>;
   @ViewChild('toggle') toggle?: ElementRef<HTMLInputElement>;
 
-  @Input() set todo(todo: Todo) {
+  @Input({ required: true })
+  set todo(todo: Todo) {
     this.state.set({ todo });
   }
 
