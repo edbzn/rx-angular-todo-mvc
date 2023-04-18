@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RxFor } from '@rx-angular/template/for';
 import { LetDirective } from '@rx-angular/template/let';
-import { SuspenseComponent } from './suspense.component';
 import { TodoComponent } from './todo.component';
 import { Todo, TodoService } from './todo.service';
 
@@ -15,7 +14,6 @@ import { Todo, TodoService } from './todo.service';
     ReactiveFormsModule,
     LetDirective,
     TodoComponent,
-    SuspenseComponent,
   ],
   providers: [TodoService],
   host: {
@@ -48,18 +46,14 @@ import { Todo, TodoService } from './todo.service';
       />
       <label for="toggle-all">Mark all as complete</label>
       <!-- Todos -->
-      <app-suspense [data$]="todoService.filteredTodos$">
-        <ng-template #data let-todos>
-          <app-todo
-            class="todo-list"
-            *rxFor="let todo of todos; trackBy: trackById; let i = index"
-            [attr.data-uf]="'todo-' + i"
-            [todo]="todo"
-            (change)="todoService.actions.update($event)"
-            (remove)="todoService.actions.remove($event)"
-          ></app-todo>
-        </ng-template>
-      </app-suspense>
+      <app-todo
+        class="todo-list"
+        *rxFor="let todo of todoService.filteredTodos$; trackBy: trackById; let i = index"
+        [attr.data-uf]="'todo-' + i"
+        [todo]="todo"
+        (change)="todoService.actions.update($event)"
+        (remove)="todoService.actions.remove($event)"
+      ></app-todo>
     </section>
     <footer class="footer" *rxLet="todoService.filter$; let filter">
       <span class="todo-count">

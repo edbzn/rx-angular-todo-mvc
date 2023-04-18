@@ -1557,11 +1557,6 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@jscutlery/operators@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@jscutlery/operators/-/operators-0.2.2.tgz#ddf8d7543af2b8785f38e73922b2dea2baf328da"
-  integrity sha512-EZnKSWhLMm/mRlkEkILd+QHpDxu+LLQa2wF7RtB2EOgZpnSGiSjK/+Jdb1Cd8ycaJmm9XM0855QAnT/QfhM5CA==
-
 "@leichtgewicht/ip-codec@^2.0.1":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
