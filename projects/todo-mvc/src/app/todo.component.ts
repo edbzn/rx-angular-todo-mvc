@@ -4,15 +4,16 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter,
   Input,
   Output,
-  ViewChild
+  ViewChild,
+  inject
 } from '@angular/core';
 import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
 import { RxState } from '@rx-angular/state';
 import { select } from '@rx-angular/state/selections';
 import { LetDirective } from '@rx-angular/template/let';
+import { injectRxActionFactory, injectRxState } from './inject-functions';
 import { Todo } from './todo.service';
 
 @Component({
@@ -49,6 +50,14 @@ import { Todo } from './todo.service';
   `,
 })
 export class TodoComponent {
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly state = injectRxState<{ isEditing: boolean; todo: Todo }>();
+  private readonly strategyProvider = inject(RxStrategyProvider);
+  private readonly actions = injectRxActionFactory<{
+    remove: Pick<Todo, 'id'>;
+    change: Todo;
+  }>().create();
+
   @ViewChild('input') input?: ElementRef<HTMLInputElement>;
   @ViewChild('toggle') toggle?: ElementRef<HTMLInputElement>;
 
@@ -65,14 +74,10 @@ export class TodoComponent {
     return this.state.get('isEditing');
   }
 
-  @Output() remove = new EventEmitter<Pick<Todo, 'id'>>();
-  @Output() change = new EventEmitter<Todo>();
+  @Output() remove = this.actions.remove$;
+  @Output() change = this.actions.change$;
 
-  constructor(
-    private readonly cd: ChangeDetectorRef,
-    private readonly state: RxState<{ isEditing: boolean; todo: Todo }>,
-    private readonly strategyProvider: RxStrategyProvider
-  ) {
+  constructor() {
     this.state.set({ isEditing: false });
 
     const isEditing$ = this.state.$.pipe(
@@ -96,7 +101,7 @@ export class TodoComponent {
         done: this.toggle!.nativeElement.checked,
       },
     }));
-    this.change.emit(this.todo);
+    this.actions.change(this.todo);
   }
 
   edit(): void {
@@ -104,7 +109,7 @@ export class TodoComponent {
   }
 
   destroy(): void {
-    this.remove.emit(this.todo);
+    this.actions.remove(this.todo);
   }
 
   updateText(): void {
@@ -115,6 +120,6 @@ export class TodoComponent {
         text: this.input!.nativeElement.value,
       },
     }));
-    this.change.emit(this.todo);
+    this.actions.change(this.todo);
   }
 }
