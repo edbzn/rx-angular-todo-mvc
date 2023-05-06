@@ -7,4 +7,4 @@ Todo MVC demo using [RxAngular](https://rx-angular.github.io/rx-angular/#/).
 - Fully Zoneless
 - Consumes an API via HTTP (to showcase a real-world app)
 
-![demo](https://pbs.twimg.com/media/EkmsWqNW0AA40dk?format=jpg&name=medium)
+![demo](./app.png)

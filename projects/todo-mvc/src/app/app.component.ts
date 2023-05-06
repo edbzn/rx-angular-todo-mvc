@@ -9,7 +9,7 @@ import { TodoListComponent } from './todo-list.component';
   template: `
     <app-todo-list></app-todo-list>
     <footer>
-      <strong>Angular Zoneless experiment</strong> using
+      <strong>Fully zoneless Angular app</strong> using
       <code>
         <a
           href="https://github.com/rx-angular/rx-angular/blob/master/libs/state/README.md"
