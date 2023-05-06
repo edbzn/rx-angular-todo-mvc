@@ -16,7 +16,7 @@
             "outputPath": "dist/todo-mvc",
             "index": "projects/todo-mvc/src/index.html",
             "main": "projects/todo-mvc/src/main.ts",
-            "polyfills": "projects/todo-mvc/src/polyfills.ts",
+            "polyfills": [],
             "tsConfig": "projects/todo-mvc/tsconfig.app.json",
             "aot": true,
             "assets": [
@@ -28,12 +28,6 @@
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/todo-mvc/src/environments/environment.ts",
-                  "with": "projects/todo-mvc/src/environments/environment.prod.ts"
-                }
-              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
