@@ -19,21 +19,21 @@
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@rx-angular/cdk": "15.0.0",
     "@rx-angular/state": "15.0.0",
-    "@rx-angular/template": "15.1.0",
+    "@rx-angular/template": "15.2.0",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "rxjs": "~7.4.0",
-    "tslib": "^2.0.0"
+    "tslib": "^2.5.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "16.0.0",
     "@angular/cli": "^16.0.0",
     "@angular/compiler-cli": "^16.0.0",
-    "@push-based/user-flow": "^0.19.0",
+    "@push-based/user-flow": "^0.19.2",
     "concurrently": "^7.6.0",
-    "nodemon": "^2.0.20",
+    "nodemon": "^2.0.22",
     "ts-node": "~8.3.0",
     "typescript": "~5.0.2",
-    "webpack-bundle-analyzer": "^4.5.0"
+    "webpack-bundle-analyzer": "^4.8.0"
   }
 }
