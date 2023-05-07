@@ -1,8 +1,5 @@
 name: user-flow
 on:
-  push:
-    branches:
-    - main
   pull_request:
     branches:
     - main
