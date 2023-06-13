@@ -2,7 +2,7 @@ import { DestroyRef, inject } from '@angular/core';
 import { RxState } from '@rx-angular/state';
 import { RxActionFactory } from '@rx-angular/state/actions';
 
-export function injectRxState<T extends object>() {
+export function injectRxState<T extends object>(): RxState<T> {
   const rxState = new RxState<T>();
   const destroyRef = inject(DestroyRef);
 
@@ -11,7 +11,7 @@ export function injectRxState<T extends object>() {
   return rxState;
 }
 
-export function injectRxActionFactory<T extends Partial<object>>() {
+export function injectRxActionFactory<T extends Partial<object>>(): RxActionFactory<T> {
   const actionFactory = new RxActionFactory<T>();
   const destroyRef = inject(DestroyRef);
 
