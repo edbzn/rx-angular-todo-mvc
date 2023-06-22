@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RxFor } from '@rx-angular/template/for';
-import { LetDirective } from '@rx-angular/template/let';
+import { RxLet } from '@rx-angular/template/let';
 import { TodoComponent } from './todo.component';
 import { Todo, TodoService } from './todo.service';
 
@@ -12,7 +12,7 @@ import { Todo, TodoService } from './todo.service';
   imports: [
     RxFor,
     ReactiveFormsModule,
-    LetDirective,
+    RxLet,
     TodoComponent,
   ],
   providers: [TodoService],

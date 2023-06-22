@@ -12,7 +12,7 @@ import {
 import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
 import { RxState } from '@rx-angular/state';
 import { select } from '@rx-angular/state/selections';
-import { LetDirective } from '@rx-angular/template/let';
+import { RxLet } from '@rx-angular/template/let';
 import { injectRxActionFactory, injectRxState } from './inject-functions';
 import { Todo } from './todo.service';
 
@@ -20,7 +20,7 @@ import { Todo } from './todo.service';
   standalone: true,
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, LetDirective],
+  imports: [NgIf, RxLet],
   providers: [RxState],
   template: `
     <article
