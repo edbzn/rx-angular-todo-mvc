@@ -6,8 +6,7 @@
     "start:client": "ng serve",
     "start:server": "nodemon server.js",
     "start": "concurrently \"yarn start:server\" \"yarn start:client\"",
-    "build": "ng build",
-    "analyze": "ng run todo-mvc:build:development --stats-json && webpack-bundle-analyzer dist/todo-mvc/stats.json"
+    "build": "ng build"
   },
   "private": true,
   "dependencies": {
@@ -33,7 +32,6 @@
     "concurrently": "^7.6.0",
     "nodemon": "^2.0.22",
     "ts-node": "~8.3.0",
-    "typescript": "~5.2.2",
-    "webpack-bundle-analyzer": "^4.8.0"
+    "typescript": "~5.2.2"
   }
 }
