@@ -11,12 +11,12 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "^16.2.0-next.2",
-    "@angular/compiler": "^16.2.0-next.2",
-    "@angular/core": "^16.2.0-next.2",
-    "@angular/forms": "^16.2.0-next.2",
-    "@angular/platform-browser": "^16.2.0-next.2",
-    "@angular/platform-browser-dynamic": "^16.2.0-next.2",
+    "@angular/common": "^17.0.0-next.5",
+    "@angular/compiler": "^17.0.0-next.5",
+    "@angular/core": "^17.0.0-next.5",
+    "@angular/forms": "^17.0.0-next.5",
+    "@angular/platform-browser": "^17.0.0-next.5",
+    "@angular/platform-browser-dynamic": "^17.0.0-next.5",
     "@rx-angular/cdk": "16.0.0",
     "@rx-angular/state": "16.0.0",
     "@rx-angular/template": "16.0.1",
@@ -26,14 +26,14 @@
     "tslib": "^2.5.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "16.2.0-next.2",
-    "@angular/cli": "^16.2.0-next.2",
-    "@angular/compiler-cli": "^16.2.0-next.2",
+    "@angular-devkit/build-angular": "17.0.0-next.4",
+    "@angular/cli": "^17.0.0-next.4",
+    "@angular/compiler-cli": "^17.0.0-next.5",
     "@push-based/user-flow": "^0.20.1",
     "concurrently": "^7.6.0",
     "nodemon": "^2.0.22",
     "ts-node": "~8.3.0",
-    "typescript": "~5.0.2",
+    "typescript": "~5.2.2",
     "webpack-bundle-analyzer": "^4.8.0"
   }
 }
