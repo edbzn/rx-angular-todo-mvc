@@ -14,13 +14,13 @@ import { TodoListComponent } from './todo-list.component';
         <a
           href="https://github.com/rx-angular/rx-angular/blob/master/libs/state/README.md"
         >
-          @rx-angular/state</a>
+          &#64;rx-angular/state</a>
       </code>
       to manage state and
       <code>
         <a
           href="https://github.com/rx-angular/rx-angular/blob/master/libs/template/README.md"
-          >@rx-angular/template</a
+          >&#64;rx-angular/template</a
         ></code
       >
       to detect changes.
