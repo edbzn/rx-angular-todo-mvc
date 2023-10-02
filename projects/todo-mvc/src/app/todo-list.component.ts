@@ -10,7 +10,6 @@ import { Todo, TodoService } from './todo.service';
   selector: 'app-todo-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    RxFor,
     ReactiveFormsModule,
     RxLet,
     TodoComponent,
@@ -45,15 +44,17 @@ import { Todo, TodoService } from './todo.service';
         (click)="todoService.actions.toggleAll()"
       />
       <label for="toggle-all">Mark all as complete</label>
-      <!-- Todos -->
-      <app-todo
-        class="todo-list"
-        *rxFor="let todo of todoService.filteredTodos$; trackBy: trackById; let i = index"
-        [attr.data-uf]="'todo-' + i"
-        [todo]="todo"
-        (change)="todoService.actions.update($event)"
-        (remove)="todoService.actions.remove($event)"
-      ></app-todo>
+      <ng-container *rxLet="todoService.filteredTodos$; let todos">
+        @for (todo of todos; track todo.id; let i = $index) {
+          <app-todo
+            class="todo-list"
+            [attr.data-uf]="'todo-' + i"
+            [todo]="todo"
+            (change)="todoService.actions.update($event)"
+            (remove)="todoService.actions.remove($event)"
+          />
+        }
+      </ng-container>
     </section>
     <footer class="footer" *rxLet="todoService.filter$; let filter">
       <span class="todo-count">
@@ -113,9 +114,5 @@ export class TodoListComponent {
 
     this.todoService.actions.create({ text });
     this.input.reset();
-  }
-
-  trackById(index: number, todo: Todo) {
-    return todo.id;
   }
 }

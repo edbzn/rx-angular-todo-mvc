@@ -7,7 +7,7 @@ import {
   Input,
   Output,
   ViewChild,
-  inject
+  inject,
 } from '@angular/core';
 import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
 import { RxState } from '@rx-angular/state';
@@ -20,32 +20,33 @@ import { Todo } from './todo.service';
   standalone: true,
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, RxLet],
   providers: [RxState],
   template: `
     <article
       class="todo"
       [class]="{ completed: todo.done, editing: isEditing }"
     >
-      <div class="view" *ngIf="!isEditing">
+      @if (isEditing) {
         <input
-          #toggle
-          class="toggle"
-          type="checkbox"
-          [checked]="todo.done"
-          (input)="toggleDone()"
+          #input
+          class="edit"
+          [value]="todo.text"
+          (blur)="updateText()"
+          (keyup.enter)="updateText()"
         />
-        <label (dblclick)="edit()">{{ todo.text }}</label>
-        <button class="destroy" (click)="destroy()"></button>
-      </div>
-      <input
-        #input
-        class="edit"
-        *ngIf="isEditing"
-        [value]="todo.text"
-        (blur)="updateText()"
-        (keyup.enter)="updateText()"
-      />
+      } @else {
+        <div class="view">
+          <input
+            #toggle
+            class="toggle"
+            type="checkbox"
+            [checked]="todo.done"
+            (input)="toggleDone()"
+          />
+          <label (dblclick)="edit()">{{ todo.text }}</label>
+          <button class="destroy" (click)="destroy()"></button>
+        </div>
+      }
     </article>
   `,
 })
