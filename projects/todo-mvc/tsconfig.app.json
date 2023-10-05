@@ -10,7 +10,6 @@
   "include": ["src/**/*.d.ts"],
   "angularCompilerOptions": {
     "strictTemplates": true,
-    "strictInjectionParameters": true,
-    "_enabledBlockTypes": ["if", "defer", "for", "switch"]
+    "strictInjectionParameters": true
   }
 }
