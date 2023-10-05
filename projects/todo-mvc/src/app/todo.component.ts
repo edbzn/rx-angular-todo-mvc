@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -12,7 +11,6 @@ import {
 import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
 import { RxState } from '@rx-angular/state';
 import { select } from '@rx-angular/state/selections';
-import { RxLet } from '@rx-angular/template/let';
 import { injectRxActionFactory, injectRxState } from './inject-functions';
 import { Todo } from './todo.service';
 
