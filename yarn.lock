@@ -209,6 +209,14 @@
   dependencies:
     tslib "^2.3.0"
 
+"@angular/ssr@^17.0.0-next.0":
+  version "17.0.0-next.1"
+  resolved "https://registry.yarnpkg.com/@angular/ssr/-/ssr-17.0.0-next.1.tgz#efcd98f57c4a6634aea6d17dd9aef7d479702f30"
+  integrity sha512-fUfTClemn8wqMKgYNn4sp3Q0BAfgRHyNhJ/ycWXmUL5WYSdtqVaQPMIQBhJq0l/XbnuI1jFfZfF5zx19OiyqeQ==
+  dependencies:
+    critters "0.0.20"
+    tslib "^2.3.0"
+
 "@assemblyscript/loader@^0.10.1":
   version "0.10.1"
   resolved "https://registry.npmjs.org/@assemblyscript/loader/-/loader-0.10.1.tgz"

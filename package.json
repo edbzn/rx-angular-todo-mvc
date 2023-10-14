@@ -16,6 +16,7 @@
     "@angular/forms": "^17.0.0-next.7",
     "@angular/platform-browser": "^17.0.0-next.7",
     "@angular/platform-browser-dynamic": "^17.0.0-next.7",
+    "@angular/ssr": "^17.0.0-next.0",
     "@rx-angular/cdk": "16.0.0",
     "@rx-angular/state": "16.0.0",
     "@rx-angular/template": "16.1.0",
