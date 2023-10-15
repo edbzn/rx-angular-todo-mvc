@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RxLet } from '@rx-angular/template/let';
 import { TodoComponent } from './todo.component';
@@ -102,8 +102,7 @@ import { TodoService } from './todo.service';
 })
 export class TodoListComponent {
   readonly input = new FormControl('');
-
-  constructor(readonly todoService: TodoService) {}
+  readonly todoService = inject(TodoService);
 
   addTodo(): void {
     const text = (this.input.value ?? '').trim();
