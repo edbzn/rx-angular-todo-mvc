@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { forkJoin, merge } from 'rxjs';
 import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
-
-import { injectRxActionFactory, injectRxState } from './inject-functions';
+import { rxState } from '@rx-angular/state';
+import { rxActions } from '@rx-angular/state/actions';
 import { TodoResource } from './todo.resource';
 
 export type TodoFilter = 'all' | 'completed' | 'active';
@@ -33,9 +33,11 @@ export const INITIAL_STATE: Partial<TodoState> = {
 
 @Injectable()
 export class TodoService {
-  readonly #todoResource = inject(TodoResource)
-  readonly #state = injectRxState<TodoState>();
-
+  readonly #todoResource = inject(TodoResource);
+  readonly #state = rxState<TodoState>(({ set }) => {
+    set(INITIAL_STATE);
+  });
+  readonly actions = rxActions<Actions>();
   readonly filter$ = this.#state.select('filter');
   readonly allTodos$ = this.#state.select('todos');
   readonly completedTodos$ = this.allTodos$.pipe(
@@ -53,8 +55,6 @@ export class TodoService {
         return true;
       })
   );
-
-  readonly actions = injectRxActionFactory<Actions>().create();
 
   constructor() {
     const getAll$ = this.#todoResource
@@ -97,7 +97,6 @@ export class TodoService {
       map((updates) => ({ todos: updates.at(-1) }))
     );
 
-    this.#state.set(INITIAL_STATE);
     this.#state.connect(
       merge(
         getAll$,

@@ -9,53 +9,52 @@ import {
   inject,
 } from '@angular/core';
 import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
-import { RxState } from '@rx-angular/state';
+import { rxState } from '@rx-angular/state';
+import { rxActions } from '@rx-angular/state/actions';
+import { rxEffects } from '@rx-angular/state/effects';
 import { select } from '@rx-angular/state/selections';
-import { injectRxActionFactory, injectRxState } from './inject-functions';
 import { Todo } from './todo.service';
 
 @Component({
   standalone: true,
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [RxState],
   template: `
     <article
       class="todo"
       [class]="{ completed: todo.done, editing: isEditing }"
     >
       @if (isEditing) {
-        <input
-          #input
-          class="edit"
-          [value]="todo.text"
-          (blur)="updateText()"
-          (keyup.enter)="updateText()"
-        />
+      <input
+        #input
+        class="edit"
+        [value]="todo.text"
+        (blur)="updateText()"
+        (keyup.enter)="updateText()"
+      />
       } @else {
-        <div class="view">
-          <input
-            #toggle
-            class="toggle"
-            type="checkbox"
-            [checked]="todo.done"
-            (input)="toggleDone()"
-          />
-          <label (dblclick)="edit()">{{ todo.text }}</label>
-          <button class="destroy" (click)="destroy()"></button>
-        </div>
+      <div class="view">
+        <input
+          #toggle
+          class="toggle"
+          type="checkbox"
+          [checked]="todo.done"
+          (input)="toggleDone()"
+        />
+        <label (dblclick)="edit()">{{ todo.text }}</label>
+        <button class="destroy" (click)="destroy()"></button>
+      </div>
       }
     </article>
   `,
 })
 export class TodoComponent {
   private readonly cd = inject(ChangeDetectorRef);
-  private readonly state = injectRxState<{ isEditing: boolean; todo: Todo }>();
   private readonly strategyProvider = inject(RxStrategyProvider);
-  private readonly actions = injectRxActionFactory<{
-    remove: Pick<Todo, 'id'>;
-    change: Todo;
-  }>().create();
+  private readonly state = rxState<{ isEditing: boolean; todo: Todo }>(
+    ({ set }) => set({ isEditing: false })
+  );
+  private readonly actions = rxActions<{ remove: Todo; change: Todo }>();
 
   @ViewChild('input') input?: ElementRef<HTMLInputElement>;
   @ViewChild('toggle') toggle?: ElementRef<HTMLInputElement>;
@@ -77,20 +76,20 @@ export class TodoComponent {
   @Output() change = this.actions.change$;
 
   constructor() {
-    this.state.set({ isEditing: false });
+    rxEffects(({ register }) => {
+      const isEditing$ = this.state.$.pipe(
+        select('isEditing'),
+        this.strategyProvider.scheduleWith((isEditing) => {
+          this.cd.detectChanges();
 
-    const isEditing$ = this.state.$.pipe(
-      select('isEditing'),
-      this.strategyProvider.scheduleWith((isEditing) => {
-        this.cd.detectChanges();
+          if (isEditing) {
+            this.input!.nativeElement.focus();
+          }
+        })
+      );
 
-        if (isEditing) {
-          this.input!.nativeElement.focus();
-        }
-      })
-    );
-
-    this.state.hold(isEditing$);
+      register(isEditing$);
+    });
   }
 
   toggleDone(): void {
