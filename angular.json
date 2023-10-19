@@ -20,7 +20,6 @@
             "tsConfig": "projects/todo-mvc/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "projects/todo-mvc/src/favicon.ico",
               "projects/todo-mvc/src/assets"
             ],
             "styles": ["projects/todo-mvc/src/styles.css"],
