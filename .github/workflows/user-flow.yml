@@ -1,13 +1,11 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  build-and-lint:
+  user-flow:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,8 +20,8 @@ jobs:
       - name: Install
         run: yarn install --frozen-lockfile
 
-      - name: Lint
-        run: yarn lint
-
-      - name: Build
-        run: yarn build
+      - name: Executing user-flow CLI
+        uses: push-based/user-flow-gh-action@v0.4.1
+        with:
+          verbose: 'on'
+          rcPath: ./projects/todo-mvc/.user-flowrc.json
