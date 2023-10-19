@@ -54,7 +54,7 @@ export class TodoComponent {
   private readonly state = rxState<{ isEditing: boolean; todo: Todo }>(
     ({ set }) => set({ isEditing: false })
   );
-  private readonly actions = rxActions<{ remove: Todo; change: Todo }>();
+  private readonly actions = rxActions<{ remove: Todo; update: Todo }>();
 
   @ViewChild('input') input?: ElementRef<HTMLInputElement>;
   @ViewChild('toggle') toggle?: ElementRef<HTMLInputElement>;
@@ -73,7 +73,7 @@ export class TodoComponent {
   }
 
   @Output() remove = this.actions.remove$;
-  @Output() change = this.actions.change$;
+  @Output() update = this.actions.update$;
 
   constructor() {
     rxEffects(({ register }) => {
@@ -83,6 +83,7 @@ export class TodoComponent {
           this.cd.detectChanges();
 
           if (isEditing) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.input!.nativeElement.focus();
           }
         })
@@ -96,10 +97,11 @@ export class TodoComponent {
     this.state.set(({ todo }) => ({
       todo: {
         ...todo,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         done: this.toggle!.nativeElement.checked,
       },
     }));
-    this.actions.change(this.todo);
+    this.actions.update(this.todo);
   }
 
   edit(): void {
@@ -115,9 +117,10 @@ export class TodoComponent {
       isEditing: false,
       todo: {
         ...todo,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         text: this.input!.nativeElement.value,
       },
     }));
-    this.actions.change(this.todo);
+    this.actions.update(this.todo);
   }
 }

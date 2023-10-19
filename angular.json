@@ -60,8 +60,20 @@
           "options": {
             "buildTarget": "todo-mvc:build:development"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/todo-mvc/**/*.ts",
+              "projects/todo-mvc/**/*.html"
+            ]
+          }
         }
       }
     }
+  },
+  "cli": {
+    "schematicCollections": ["@angular-eslint/schematics"]
   }
 }

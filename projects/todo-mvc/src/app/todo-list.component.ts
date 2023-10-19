@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RxLet } from '@rx-angular/template/let';
 import { TodoComponent } from './todo.component';
@@ -14,9 +14,6 @@ import { TodoService } from './todo.service';
     TodoComponent,
   ],
   providers: [TodoService],
-  host: {
-    class: 'todo-app',
-  },
   styles: [
     `
       :host {
@@ -49,7 +46,7 @@ import { TodoService } from './todo.service';
             class="todo-list"
             [attr.data-uf]="'todo-' + i"
             [todo]="todo"
-            (change)="todoService.actions.update($event)"
+            (update)="todoService.actions.update($event)"
             (remove)="todoService.actions.remove($event)"
           />
         }
@@ -101,6 +98,8 @@ import { TodoService } from './todo.service';
   `,
 })
 export class TodoListComponent {
+  @HostBinding('class.todo-app') readonly todoApp = true;
+
   readonly input = new FormControl('');
   readonly todoService = inject(TodoService);
 
