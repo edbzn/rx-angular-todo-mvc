@@ -80,10 +80,11 @@ export class TodoComponent {
       const isEditing$ = this.state.$.pipe(
         select('isEditing'),
         this.strategyProvider.scheduleWith((isEditing) => {
+          // eslint-disable-next-line @rx-angular/no-explicit-change-detection-apis
           this.cd.detectChanges();
 
           if (isEditing) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @rx-angular/prefer-no-layout-sensitive-apis
             this.input!.nativeElement.focus();
           }
         })

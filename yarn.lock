@@ -2302,6 +2302,13 @@
     ng-morph "^2.2.3"
     tslib "^2.4.1"
 
+"@rx-angular/eslint-plugin@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@rx-angular/eslint-plugin/-/eslint-plugin-1.0.0.tgz#237db8e5d87f4d279a9e7061e9a82255494d4fb0"
+  integrity sha512-XyaNULv3WXMshk6QnPWxacZxZPnvgXKsgom+uDoXvV4LqAxVpd6kav/MVBMxSy+M5CkW8OiTGdWg0+6Qpdia7g==
+  dependencies:
+    "@typescript-eslint/experimental-utils" "^5.4.0"
+
 "@rx-angular/state@16.1.0":
   version "16.1.0"
   resolved "https://registry.yarnpkg.com/@rx-angular/state/-/state-16.1.0.tgz#a1a2ab781c6951eb47da33b61acba4f6c7616be9"
@@ -2660,6 +2667,13 @@
     natural-compare-lite "^1.4.0"
     semver "^7.3.7"
     tsutils "^3.21.0"
+
+"@typescript-eslint/experimental-utils@^5.4.0":
+  version "5.62.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-5.62.0.tgz#14559bf73383a308026b427a4a6129bae2146741"
+  integrity sha512-RTXpeB3eMkpoclG3ZHft6vG/Z30azNHuqY6wKPBHlVMZFuEvrtlEDe8gMqDb+SO+9hjC/pLekeSCryf9vMZlCw==
+  dependencies:
+    "@typescript-eslint/utils" "5.62.0"
 
 "@typescript-eslint/parser@5.62.0":
   version "5.62.0"
