@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, HostBinding, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostBinding,
+  inject,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RxLet } from '@rx-angular/template/let';
 import { TodoComponent } from './todo.component';
@@ -8,11 +13,7 @@ import { TodoService } from './todo.service';
   standalone: true,
   selector: 'app-todo-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ReactiveFormsModule,
-    RxLet,
-    TodoComponent,
-  ],
+  imports: [ReactiveFormsModule, RxLet, TodoComponent],
   providers: [TodoService],
   styles: [
     `
@@ -40,17 +41,16 @@ import { TodoService } from './todo.service';
         (click)="todoService.actions.toggleAll()"
       />
       <label for="toggle-all">Mark all as complete</label>
-      <ng-container *rxLet="todoService.filteredTodos$; let todos">
+      <section class="todo-list" *rxLet="todoService.filteredTodos$; let todos">
         @for (todo of todos; track todo.id; let i = $index) {
           <app-todo
-            class="todo-list"
             [attr.data-uf]="'todo-' + i"
             [todo]="todo"
             (update)="todoService.actions.update($event)"
             (remove)="todoService.actions.remove($event)"
           />
         }
-      </ng-container>
+      </section>
     </section>
     <footer class="footer" *rxLet="todoService.filter$; let filter">
       <span class="todo-count">

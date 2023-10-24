@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   Input,
   Output,
   ViewChild,
@@ -20,11 +21,7 @@ import { Todo } from './todo.service';
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <article
-      class="todo"
-      [class]="{ completed: todo.done, editing: isEditing }"
-    >
-      @if (isEditing) {
+    @if (isEditing) {
       <input
         #input
         class="edit"
@@ -44,8 +41,7 @@ import { Todo } from './todo.service';
         <label (dblclick)="edit()">{{ todo.text }}</label>
         <button class="destroy" (click)="destroy()"></button>
       </div>
-      }
-    </article>
+    }
   `,
 })
 export class TodoComponent {
@@ -58,6 +54,14 @@ export class TodoComponent {
 
   @ViewChild('input') input?: ElementRef<HTMLInputElement>;
   @ViewChild('toggle') toggle?: ElementRef<HTMLInputElement>;
+
+  @HostBinding('class.todo') readonly hostClass = true;
+  @HostBinding('class.completed') get completed(): boolean {
+    return this.todo.done;
+  }
+  @HostBinding('class.editing') get editing(): boolean {
+    return this.isEditing;
+  }
 
   @Input({ required: true })
   set todo(todo: Todo) {
