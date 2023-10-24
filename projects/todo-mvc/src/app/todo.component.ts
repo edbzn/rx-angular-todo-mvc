@@ -77,7 +77,7 @@ export class TodoComponent {
 
   constructor() {
     rxEffects(({ register }) => {
-      const isEditing$ = this.state.$.pipe(
+      const focusInputWhenEditing$ = this.state.$.pipe(
         select('isEditing'),
         this.strategyProvider.scheduleWith((isEditing) => {
           // eslint-disable-next-line @rx-angular/no-explicit-change-detection-apis
@@ -90,7 +90,7 @@ export class TodoComponent {
         })
       );
 
-      register(isEditing$);
+      register(focusInputWhenEditing$);
     });
   }
 
