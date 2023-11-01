@@ -2281,18 +2281,18 @@
   dependencies:
     "@typescript-eslint/experimental-utils" "^5.4.0"
 
-"@rx-angular/state@16.1.0":
-  version "16.1.0"
-  resolved "https://registry.yarnpkg.com/@rx-angular/state/-/state-16.1.0.tgz#a1a2ab781c6951eb47da33b61acba4f6c7616be9"
-  integrity sha512-WBIyanxI7xUPE/aK4LG2IpH80ej6jl4bVluGNWwbnzwsxDH1YpetlvU1QvbAmQkZlgg/moI10XOADWaxy7UsVQ==
+"@rx-angular/state@16.3.0":
+  version "16.3.0"
+  resolved "https://registry.yarnpkg.com/@rx-angular/state/-/state-16.3.0.tgz#90617610099e66eb4c25d9e320ac3569da86fb3b"
+  integrity sha512-bdV71umTRIximfTAlBOrL4m5fflInjK2O/kYj6mmAvKig0+F/NxF11psa8AyEXCieZFzKlukvGuUV//ulKAn9A==
   dependencies:
     ng-morph "^3.0.0"
     tslib "^2.4.1"
 
-"@rx-angular/template@16.1.0":
-  version "16.1.0"
-  resolved "https://registry.npmjs.org/@rx-angular/template/-/template-16.1.0.tgz"
-  integrity sha512-Q394edxYdA3ZPMaDVBtt51KY9lhfGYnMiLyMaf/sWKlLubj8Hn5PCgfz1nZFGD1f3NEU5Q5pTwT3Sk++qG5Ogw==
+"@rx-angular/template@16.1.1":
+  version "16.1.1"
+  resolved "https://registry.yarnpkg.com/@rx-angular/template/-/template-16.1.1.tgz#6b2a8d632629659b0a36b1ee1d9b438bd4f21f01"
+  integrity sha512-Jhe53Bcwuv0xDNIGNvJzro2Uer9LJg0F7OwNH0a3SkSKaeNOVLJTwI0fdkY8hjeoVCLpoX1xTH/FoYWaX/m70w==
   dependencies:
     ng-morph "^3.0.0"
     tslib "^2.4.1"
