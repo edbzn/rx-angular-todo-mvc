@@ -6,6 +6,7 @@ import {
   HostBinding,
   Input,
   Output,
+  Signal,
   ViewChild,
   inject,
 } from '@angular/core';
@@ -21,11 +22,11 @@ import { Todo } from './todo.service';
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (isEditing) {
+    @if (isEditing()) {
       <input
         #input
         class="edit"
-        [value]="todo.text"
+        [value]="todo().text"
         (blur)="updateText()"
         (keyup.enter)="updateText()"
       />
@@ -35,10 +36,10 @@ import { Todo } from './todo.service';
           #toggle
           class="toggle"
           type="checkbox"
-          [checked]="todo.done"
+          [checked]="todo().done"
           (input)="toggleDone()"
         />
-        <label (dblclick)="edit()">{{ todo.text }}</label>
+        <label (dblclick)="edit()">{{ todo().text }}</label>
         <button class="destroy" (click)="destroy()"></button>
       </div>
     }
@@ -57,10 +58,10 @@ export class TodoComponent {
 
   @HostBinding('class.todo') readonly hostClass = true;
   @HostBinding('class.completed') get completed(): boolean {
-    return this.todo.done;
+    return this.todo().done;
   }
   @HostBinding('class.editing') get editing(): boolean {
-    return this.isEditing;
+    return this.isEditing();
   }
 
   @Input({ required: true })
@@ -68,12 +69,12 @@ export class TodoComponent {
     this.state.set({ todo });
   }
 
-  get todo(): Todo {
-    return this.state.get('todo');
+  get todo(): Signal<Todo> {
+    return this.state.signal('todo');
   }
 
-  get isEditing(): boolean {
-    return this.state.get('isEditing');
+  get isEditing(): Signal<boolean> {
+    return this.state.signal('isEditing');
   }
 
   @Output() remove = this.actions.remove$;
@@ -106,7 +107,7 @@ export class TodoComponent {
         done: this.toggle!.nativeElement.checked,
       },
     }));
-    this.actions.update(this.todo);
+    this.actions.update(this.todo());
   }
 
   edit(): void {
@@ -114,7 +115,7 @@ export class TodoComponent {
   }
 
   destroy(): void {
-    this.actions.remove(this.todo);
+    this.actions.remove(this.todo());
   }
 
   updateText(): void {
@@ -126,6 +127,6 @@ export class TodoComponent {
         text: this.input!.nativeElement.value,
       },
     }));
-    this.actions.update(this.todo);
+    this.actions.update(this.todo());
   }
 }
