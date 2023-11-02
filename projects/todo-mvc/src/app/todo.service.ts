@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { forkJoin, merge, Observable } from 'rxjs';
+import { forkJoin, merge, MonoTypeOperatorFunction } from 'rxjs';
 import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
 import { rxState } from '@rx-angular/state';
 import { rxActions } from '@rx-angular/state/actions';
@@ -27,11 +27,13 @@ export interface Actions {
   setFilter: TodoFilter;
 }
 
-const completedTodos = (source: Observable<Todo[]>): Observable<Todo[]> =>
-  source.pipe(map((todos) => todos.filter((todo) => todo.done)));
+const completedTodos: MonoTypeOperatorFunction<Todo[]> = (source) => {
+  return source.pipe(map((todos) => todos.filter((todo) => todo.done)));
+}
 
-const activeTodos = (source: Observable<Todo[]>): Observable<Todo[]> =>
-  source.pipe(map((todos) => todos.filter((todo) => !todo.done)));
+const activeTodos: MonoTypeOperatorFunction<Todo[]> = (source) => {
+  return source.pipe(map((todos) => todos.filter((todo) => !todo.done)));
+}
 
 @Injectable()
 export class TodoService {
