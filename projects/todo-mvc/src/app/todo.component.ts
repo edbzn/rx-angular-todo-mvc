@@ -29,6 +29,11 @@ interface Transforms {
   updateText: (e: Event | string) => string;
 }
 
+interface State {
+  isEditing: boolean;
+  todo: Todo;
+}
+
 const eventChecked = (e: Event): boolean => {
   return (e.target as HTMLInputElement).checked;
 };
@@ -71,23 +76,21 @@ export class TodoComponent {
     })
   );
 
-  private readonly state = rxState<{ isEditing: boolean; todo: Todo }>(
-    ({ set, connect }) => {
-      set({ isEditing: false });
-      connect('todo', this.actions.toggleDone$, ({ todo }, done: boolean) => ({
+  private readonly state = rxState<State>(({ set, connect }) => {
+    set({ isEditing: false });
+    connect('todo', this.actions.toggleDone$, ({ todo }, done: boolean) => ({
+      ...todo,
+      done,
+    }));
+    connect(this.actions.updateText$, ({ todo }, text: string) => ({
+      isEditing: false,
+      todo: {
         ...todo,
-        done,
-      }));
-      connect(this.actions.updateText$, ({ todo }, text: string) => ({
-        isEditing: false,
-        todo: {
-          ...todo,
-          text,
-        },
-      }));
-      connect('isEditing', this.actions.edit$, () => true);
-    }
-  );
+        text,
+      },
+    }));
+    connect('isEditing', this.actions.edit$, () => true);
+  });
 
   @ViewChild('input') input?: ElementRef<HTMLInputElement>;
 
