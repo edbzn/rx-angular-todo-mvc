@@ -1,24 +1,17 @@
 import { inject, Injectable } from '@angular/core';
-import { forkJoin, merge, MonoTypeOperatorFunction } from 'rxjs';
-import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
 import { rxState } from '@rx-angular/state';
 import { rxActions } from '@rx-angular/state/actions';
+import { forkJoin, merge, MonoTypeOperatorFunction } from 'rxjs';
+import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
+import { Todo, TodoFilter } from './todo.model';
 import { TodoResource } from './todo.resource';
 
-export type TodoFilter = 'all' | 'completed' | 'active';
-
-export interface Todo {
-  id: string;
-  text: string;
-  done: boolean;
-}
-
-export interface TodoState {
+interface TodoState {
   todos: Todo[];
   filter: TodoFilter;
 }
 
-export interface Actions {
+interface Actions {
   create: Pick<Todo, 'text'>;
   remove: Pick<Todo, 'id'>;
   update: Pick<Todo, 'id' | 'text' | 'done'>;
@@ -29,11 +22,11 @@ export interface Actions {
 
 const completedTodos: MonoTypeOperatorFunction<Todo[]> = (source) => {
   return source.pipe(map((todos) => todos.filter((todo) => todo.done)));
-}
+};
 
 const activeTodos: MonoTypeOperatorFunction<Todo[]> = (source) => {
   return source.pipe(map((todos) => todos.filter((todo) => !todo.done)));
-}
+};
 
 @Injectable()
 export class TodoService {

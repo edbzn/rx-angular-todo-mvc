@@ -15,7 +15,7 @@ import { eventValue, rxActions } from '@rx-angular/state/actions';
 import { rxEffects } from '@rx-angular/state/effects';
 import { select } from '@rx-angular/state/selections';
 import { merge, switchMap, take } from 'rxjs';
-import { Todo } from './todo.service';
+import { Todo } from './todo.model';
 
 interface Actions {
   remove: Todo;
