@@ -16,15 +16,15 @@ export class TodoResource {
     return this.#http.post<Todo[]>(TodoResource.endpoint, todo);
   }
 
-  remove(todo: Pick<Todo, 'id'>) {
+  removeOne(todo: Pick<Todo, 'id'>) {
     return this.#http.delete<Todo[]>(`${TodoResource.endpoint}/${todo.id}`);
   }
 
-  update(todo: Todo) {
+  updateOne(todo: Todo) {
     return this.#http.put<Todo[]>(`${TodoResource.endpoint}/${todo.id}`, todo);
   }
 
-  updateAll(todos: Todo[]) {
+  updateMany(todos: Todo[]) {
     return this.#http.put<Todo[]>(TodoResource.endpoint, todos);
   }
 }

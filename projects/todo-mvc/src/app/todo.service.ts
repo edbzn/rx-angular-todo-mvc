@@ -50,17 +50,17 @@ export class TodoService {
       map((todos) => ({ todos }))
     );
     const remove$ = this.actions.remove$.pipe(
-      exhaustMap((todo) => this.#todoResource.remove(todo)),
+      exhaustMap((todo) => this.#todoResource.removeOne(todo)),
       map((todos) => ({ todos }))
     );
     const update$ = this.actions.update$.pipe(
-      exhaustMap((todo) => this.#todoResource.update(todo)),
+      exhaustMap((todo) => this.#todoResource.updateOne(todo)),
       map((todos) => ({ todos }))
     );
     const toggleAll$ = this.actions.toggleAll$.pipe(
       withLatestFrom(select('todos')),
       exhaustMap(([, todos]) =>
-        this.#todoResource.updateAll(
+        this.#todoResource.updateMany(
           todos.map((todo) => ({
             ...todo,
             done: todos.every(({ done }) => !done),
@@ -70,11 +70,9 @@ export class TodoService {
       map((todos) => ({ todos }))
     );
     const clearCompleted$ = this.actions.clearCompleted$.pipe(
-      withLatestFrom(select('todos').pipe(completedTodos)),
-      exhaustMap(([, todos]) =>
-        forkJoin(todos.map((todo) => this.#todoResource.remove(todo)))
-      ),
-      map((updates) => ({ todos: updates.at(-1) }))
+      withLatestFrom(select('todos').pipe(activeTodos)),
+      exhaustMap(([, todos]) => this.#todoResource.updateMany(todos)),
+      map((todos) => ({ todos }))
     );
     const drop$ = this.actions.drop$.pipe(
       withLatestFrom(select('todos')),
@@ -85,7 +83,7 @@ export class TodoService {
         updatedTodos.splice(currentIndex, 0, todo);
         return updatedTodos;
       }),
-      exhaustMap((todos) => this.#todoResource.updateAll(todos)),
+      exhaustMap((todos) => this.#todoResource.updateMany(todos)),
       map((todos) => ({ todos }))
     );
 
