@@ -11,10 +11,27 @@ import {
 } from '@angular/core';
 import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
 import { rxState } from '@rx-angular/state';
-import { rxActions } from '@rx-angular/state/actions';
+import { eventValue, rxActions } from '@rx-angular/state/actions';
 import { rxEffects } from '@rx-angular/state/effects';
 import { select } from '@rx-angular/state/selections';
+import { merge, switchMap, take } from 'rxjs';
 import { Todo } from './todo.service';
+
+interface Actions {
+  remove: Todo;
+  toggleDone: boolean;
+  updateText: string;
+  edit: void;
+}
+
+interface Transforms {
+  toggleDone: (e: Event) => boolean;
+  updateText: (e: Event | string) => string;
+}
+
+const eventChecked = (e: Event): boolean => {
+  return (e.target as HTMLInputElement).checked;
+};
 
 @Component({
   standalone: true,
@@ -22,38 +39,57 @@ import { Todo } from './todo.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isEditing) {
+    <input
+      #input
+      class="edit"
+      [value]="todo.text"
+      (blur)="actions.updateText($event)"
+      (keyup.enter)="actions.updateText($event)"
+    />
+    } @else {
+    <div class="view">
       <input
-        #input
-        class="edit"
-        [value]="todo.text"
-        (blur)="updateText()"
-        (keyup.enter)="updateText()"
+        class="toggle"
+        type="checkbox"
+        [checked]="todo.done"
+        (input)="actions.toggleDone($event)"
       />
-      } @else {
-      <div class="view">
-        <input
-          #toggle
-          class="toggle"
-          type="checkbox"
-          [checked]="todo.done"
-          (input)="toggleDone()"
-        />
-        <label (dblclick)="edit()">{{ todo.text }}</label>
-        <button class="destroy" (click)="destroy()"></button>
-      </div>
+      <label (dblclick)="actions.edit()">{{ todo.text }}</label>
+      <button class="destroy" (click)="actions.remove(todo)"></button>
+    </div>
     }
   `,
 })
 export class TodoComponent {
   private readonly cd = inject(ChangeDetectorRef);
   private readonly strategyProvider = inject(RxStrategyProvider);
-  private readonly state = rxState<{ isEditing: boolean; todo: Todo }>(
-    ({ set }) => set({ isEditing: false })
+
+  readonly actions = rxActions<Actions, Transforms>(({ transforms }) =>
+    transforms({
+      toggleDone: eventChecked,
+      updateText: eventValue,
+    })
   );
-  private readonly actions = rxActions<{ remove: Todo; update: Todo }>();
+
+  private readonly state = rxState<{ isEditing: boolean; todo: Todo }>(
+    ({ set, connect }) => {
+      set({ isEditing: false });
+      connect('todo', this.actions.toggleDone$, ({ todo }, done: boolean) => ({
+        ...todo,
+        done,
+      }));
+      connect(this.actions.updateText$, ({ todo }, text: string) => ({
+        isEditing: false,
+        todo: {
+          ...todo,
+          text,
+        },
+      }));
+      connect('isEditing', this.actions.edit$, () => true);
+    }
+  );
 
   @ViewChild('input') input?: ElementRef<HTMLInputElement>;
-  @ViewChild('toggle') toggle?: ElementRef<HTMLInputElement>;
 
   @HostBinding('class.todo') readonly hostClass = true;
   @HostBinding('class.completed') get completed(): boolean {
@@ -77,7 +113,10 @@ export class TodoComponent {
   }
 
   @Output() remove = this.actions.remove$;
-  @Output() update = this.actions.update$;
+  @Output() update = merge(
+    this.actions.toggleDone$,
+    this.actions.updateText$
+  ).pipe(switchMap(() => this.state.select('todo').pipe(take(1))));
 
   constructor() {
     rxEffects(({ register }) => {
@@ -96,36 +135,5 @@ export class TodoComponent {
 
       register(focusInputWhenEditing$);
     });
-  }
-
-  toggleDone(): void {
-    this.state.set(({ todo }) => ({
-      todo: {
-        ...todo,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        done: this.toggle!.nativeElement.checked,
-      },
-    }));
-    this.actions.update(this.todo);
-  }
-
-  edit(): void {
-    this.state.set({ isEditing: true });
-  }
-
-  destroy(): void {
-    this.actions.remove(this.todo);
-  }
-
-  updateText(): void {
-    this.state.set(({ todo }) => ({
-      isEditing: false,
-      todo: {
-        ...todo,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        text: this.input!.nativeElement.value,
-      },
-    }));
-    this.actions.update(this.todo);
   }
 }
