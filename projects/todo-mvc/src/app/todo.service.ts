@@ -60,16 +60,14 @@ export class TodoService {
     const toggleAll$ = this.actions.toggleAll$.pipe(
       withLatestFrom(select('todos')),
       exhaustMap(([, todos]) =>
-        forkJoin(
-          todos.map((todo) =>
-            this.#todoResource.update({
-              ...todo,
-              done: todos.every(({ done }) => !done),
-            })
-          )
+        this.#todoResource.updateAll(
+          todos.map((todo) => ({
+            ...todo,
+            done: todos.every(({ done }) => !done),
+          }))
         )
       ),
-      map((updates) => ({ todos: updates.at(-1) }))
+      map((todos) => ({ todos }))
     );
     const clearCompleted$ = this.actions.clearCompleted$.pipe(
       withLatestFrom(select('todos').pipe(completedTodos)),
@@ -87,7 +85,7 @@ export class TodoService {
         updatedTodos.splice(currentIndex, 0, todo);
         return updatedTodos;
       }),
-      exhaustMap(todos => this.#todoResource.updateAll(todos)),
+      exhaustMap((todos) => this.#todoResource.updateAll(todos)),
       map((todos) => ({ todos }))
     );
 
