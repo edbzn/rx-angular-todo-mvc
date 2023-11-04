@@ -20,7 +20,11 @@ export class TodoResource {
     return this.#http.delete<Todo[]>(`${TodoResource.endpoint}/${todo.id}`);
   }
 
-  update(todo: Pick<Todo, 'id' | 'text' | 'done'>) {
+  update(todo: Todo) {
     return this.#http.put<Todo[]>(`${TodoResource.endpoint}/${todo.id}`, todo);
+  }
+
+  updateAll(todos: Todo[]) {
+    return this.#http.put<Todo[]>(TodoResource.endpoint, todos);
   }
 }

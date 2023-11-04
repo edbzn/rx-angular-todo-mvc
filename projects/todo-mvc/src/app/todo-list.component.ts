@@ -1,3 +1,4 @@
+import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,7 +14,7 @@ import { TodoService } from './todo.service';
   standalone: true,
   selector: 'app-todo-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RxLet, TodoComponent],
+  imports: [ReactiveFormsModule, RxLet, TodoComponent, CdkDropList, CdkDrag],
   providers: [TodoService],
   styles: [
     `
@@ -41,9 +42,15 @@ import { TodoService } from './todo.service';
         (click)="todoService.actions.toggleAll()"
       />
       <label for="toggle-all">Mark all as complete</label>
-      <section class="todo-list" *rxLet="todoService.filteredTodos$; let todos">
+      <section
+        class="todo-list"
+        cdkDropList
+        *rxLet="todoService.filteredTodos$; let todos"
+        (cdkDropListDropped)="todoService.actions.drop($event)"
+      >
         @for (todo of todos; track todo.id; let i = $index) {
           <app-todo
+            cdkDrag
             [attr.data-uf]="'todo-' + i"
             [todo]="todo"
             (update)="todoService.actions.update($event)"

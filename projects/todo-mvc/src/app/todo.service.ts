@@ -1,3 +1,4 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { inject, Injectable } from '@angular/core';
 import { rxState } from '@rx-angular/state';
 import { rxActions } from '@rx-angular/state/actions';
@@ -14,10 +15,11 @@ interface TodoState {
 interface Actions {
   create: Pick<Todo, 'text'>;
   remove: Pick<Todo, 'id'>;
-  update: Pick<Todo, 'id' | 'text' | 'done'>;
+  update: Todo;
   toggleAll: void;
   clearCompleted: void;
   setFilter: TodoFilter;
+  drop: CdkDragDrop<Todo>;
 }
 
 const completedTodos: MonoTypeOperatorFunction<Todo[]> = (source) => {
@@ -76,6 +78,18 @@ export class TodoService {
       ),
       map((updates) => ({ todos: updates.at(-1) }))
     );
+    const drop$ = this.actions.drop$.pipe(
+      withLatestFrom(select('todos')),
+      map(([{ previousIndex, currentIndex }, todos]) => {
+        const todo = todos[previousIndex];
+        const updatedTodos = [...todos];
+        updatedTodos.splice(previousIndex, 1);
+        updatedTodos.splice(currentIndex, 0, todo);
+        return updatedTodos;
+      }),
+      exhaustMap(todos => this.#todoResource.updateAll(todos)),
+      map((todos) => ({ todos }))
+    );
 
     connect(
       merge(
@@ -85,7 +99,8 @@ export class TodoService {
         remove$,
         update$,
         toggleAll$,
-        clearCompleted$
+        clearCompleted$,
+        drop$
       )
     );
   });

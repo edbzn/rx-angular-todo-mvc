@@ -197,6 +197,15 @@
     "@angular-eslint/bundled-angular-compiler" "16.2.0"
     "@typescript-eslint/utils" "5.62.0"
 
+"@angular/cdk@^17.0.0-rc.2":
+  version "17.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-17.0.0-rc.2.tgz#eca16fb399a37517fb2c593cc38d02654786798c"
+  integrity sha512-zUCbDE5J0bgjFRVkX/RfhIE5FgbOMH+vQKyiTf8X/JutRSAWUqNN8F6pA/sl0HdnmHA2Q0jQVh6aKTD//ImhRQ==
+  dependencies:
+    tslib "^2.3.0"
+  optionalDependencies:
+    parse5 "^7.1.2"
+
 "@angular/cli@^17.0.0-rc.3":
   version "17.0.0-rc.3"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-17.0.0-rc.3.tgz#40c2d8e12196db971efdf31fb5d217ba465e208a"
@@ -7009,7 +7018,7 @@ parse5-sax-parser@^7.0.0:
   dependencies:
     parse5 "^7.0.0"
 
-parse5@^7.0.0:
+parse5@^7.0.0, parse5@^7.1.2:
   version "7.1.2"
   resolved "https://registry.npmjs.org/parse5/-/parse5-7.1.2.tgz"
   integrity sha512-Czj1WaSVpaoj0wbhMzLmWD69anp2WH7FXMB9n1Sy8/ZFF9jolSQVMu1Ij5WIyGmcBmhk7EOndpO4mIpihVqAXw==

@@ -5,7 +5,7 @@ const crypto = require("crypto");
 
 const app = express();
 
-const todos = [
+let todos = [
   { id: crypto.randomUUID(), text: "Pay bills", done: true },
   { id: crypto.randomUUID(), text: "Call mom", done: false },
 ];
@@ -29,8 +29,8 @@ app.post("/todo", (req, res) => {
 });
 
 app.delete("/todo/:id", (req, res) => {
-  console.log("DELETE /todo");
   const id = req.params.id;
+  console.log("DELETE /todo/" + id);
 
   const index = todos.findIndex((todo) => todo.id === id);
   todos.splice(index, 1);
@@ -39,13 +39,22 @@ app.delete("/todo/:id", (req, res) => {
 });
 
 app.put("/todo/:id", (req, res) => {
-  console.log("PUT /todo");
   const id = req.params.id;
+  console.log("PUT /todo/" + id);
+
   const text = req.body.text;
   const done = req.body.done;
 
   const index = todos.findIndex((todo) => todo.id === id);
   todos[index] = { id, text, done };
+
+  res.status(200).json(todos);
+});
+
+app.put("/todo", (req, res) => {
+  console.log("PUT /todo");
+
+  todos = req.body;
 
   res.status(200).json(todos);
 });
