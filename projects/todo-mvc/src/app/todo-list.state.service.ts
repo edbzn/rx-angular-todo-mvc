@@ -19,7 +19,7 @@ interface Actions {
   toggleAll: void;
   clearCompleted: void;
   setFilter: TodoFilter;
-  drop: CdkDragDrop<Todo>;
+  drop: CdkDragDrop<Todo[]>;
 }
 
 const completedTodos: MonoTypeOperatorFunction<Todo[]> = (source) => {

@@ -42,6 +42,13 @@ const eventChecked = (e: Event): boolean => {
   standalone: true,
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
   template: `
     @if (isEditing) {
     <input

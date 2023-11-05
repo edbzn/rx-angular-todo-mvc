@@ -1,6 +1,7 @@
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   HostBinding,
   inject,
@@ -44,9 +45,10 @@ import { TodoService } from './todo-list.state.service';
       <label for="toggle-all">Mark all as complete</label>
       <section
         class="todo-list"
+        *rxLet="todoService.filteredTodos$; let todos"
         cdkDropList
         cdkDropListLockAxis="y"
-        *rxLet="todoService.filteredTodos$; let todos"
+        [cdkDropListData]="todos"
         (cdkDropListDropped)="todoService.actions.drop($event)"
       >
         @for (todo of todos; track todo.id; let i = $index) {
