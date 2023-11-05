@@ -2,7 +2,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { inject, Injectable } from '@angular/core';
 import { rxState } from '@rx-angular/state';
 import { rxActions } from '@rx-angular/state/actions';
-import { forkJoin, merge, MonoTypeOperatorFunction } from 'rxjs';
+import { merge, MonoTypeOperatorFunction } from 'rxjs';
 import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
 import { Todo, TodoFilter } from './todo.model';
 import { TodoResource } from './todo.resource';

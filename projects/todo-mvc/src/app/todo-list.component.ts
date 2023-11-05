@@ -8,7 +8,7 @@ import {
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RxLet } from '@rx-angular/template/let';
 import { TodoComponent } from './todo.component';
-import { TodoService } from './todo.service';
+import { TodoService } from './todo-list.state.service';
 
 @Component({
   standalone: true,
@@ -45,6 +45,7 @@ import { TodoService } from './todo.service';
       <section
         class="todo-list"
         cdkDropList
+        cdkDropListLockAxis="y"
         *rxLet="todoService.filteredTodos$; let todos"
         (cdkDropListDropped)="todoService.actions.drop($event)"
       >
