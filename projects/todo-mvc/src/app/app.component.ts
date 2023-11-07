@@ -7,7 +7,7 @@ import { TodoListComponent } from './todo-list.component';
   standalone: true,
   imports: [TodoListComponent],
   template: `
-    <app-todo-list></app-todo-list>
+    <app-todo-list />
     <footer>
       <strong>Fully zoneless Angular app</strong> using
       <code>
