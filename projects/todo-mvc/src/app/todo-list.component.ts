@@ -1,15 +1,14 @@
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   HostBinding,
   inject,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RxLet } from '@rx-angular/template/let';
-import { TodoComponent } from './todo.component';
 import { TodoService } from './todo-list.state.service';
+import { TodoComponent } from './todo.component';
 
 @Component({
   standalone: true,
@@ -17,13 +16,11 @@ import { TodoService } from './todo-list.state.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RxLet, TodoComponent, CdkDropList, CdkDrag],
   providers: [TodoService],
-  styles: [
-    `
+  styles: `
       :host {
         display: block;
       }
     `,
-  ],
   template: `
     <header class="header">
       <h1>Todo</h1>

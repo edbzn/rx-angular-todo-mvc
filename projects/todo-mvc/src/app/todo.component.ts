@@ -42,33 +42,31 @@ const eventChecked = (e: Event): boolean => {
   standalone: true,
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: [
-    `
+  styles: `
       :host {
         display: block;
       }
-    `,
-  ],
+  `,
   template: `
     @if (isEditing) {
-    <input
-      #input
-      class="edit"
-      [value]="todo.text"
-      (blur)="actions.updateText($event)"
-      (keyup.enter)="actions.updateText($event)"
-    />
-    } @else {
-    <div class="view">
       <input
-        class="toggle"
-        type="checkbox"
-        [checked]="todo.done"
-        (input)="actions.toggleDone($event)"
+        #input
+        class="edit"
+        [value]="todo.text"
+        (blur)="actions.updateText($event)"
+        (keyup.enter)="actions.updateText($event)"
       />
-      <label (dblclick)="actions.edit()">{{ todo.text }}</label>
-      <button class="destroy" (click)="actions.remove(todo)"></button>
-    </div>
+    } @else {
+      <div class="view">
+        <input
+          class="toggle"
+          type="checkbox"
+          [checked]="todo.done"
+          (input)="actions.toggleDone($event)"
+        />
+        <label (dblclick)="actions.edit()">{{ todo.text }}</label>
+        <button class="destroy" (click)="actions.remove(todo)"></button>
+      </div>
     }
   `,
 })
