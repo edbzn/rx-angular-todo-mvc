@@ -1,9 +1,15 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { inject, Injectable } from '@angular/core';
 import { rxState } from '@rx-angular/state';
-import { rxActions } from '@rx-angular/state/actions';
+import { eventValue, rxActions } from '@rx-angular/state/actions';
 import { merge, MonoTypeOperatorFunction } from 'rxjs';
-import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
+import {
+  exhaustMap,
+  filter,
+  map,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { Todo, TodoFilter } from './todo.model';
 import { TodoResource } from './todo.resource';
 
@@ -13,13 +19,20 @@ interface TodoState {
 }
 
 interface Actions {
-  create: Pick<Todo, 'text'>;
+  create: Pick<Todo, 'text'> & { callback: () => void };
   remove: Pick<Todo, 'id'>;
   update: Todo;
   toggleAll: void;
   clearCompleted: void;
   setFilter: TodoFilter;
   drop: CdkDragDrop<Todo[]>;
+}
+
+interface Transforms {
+  create: (args: {
+    text: Event | string;
+    callback: () => void;
+  }) => Pick<Todo, 'text'> & { callback: () => void };
 }
 
 const completedTodos: MonoTypeOperatorFunction<Todo[]> = (source) => {
@@ -34,7 +47,11 @@ const activeTodos: MonoTypeOperatorFunction<Todo[]> = (source) => {
 export class TodoService {
   readonly #todoResource = inject(TodoResource);
 
-  readonly actions = rxActions<Actions>();
+  readonly actions = rxActions<Actions, Transforms>(({ transforms }) => {
+    transforms({
+      create: (args) => ({ ...args, text: eventValue(args.text) }),
+    });
+  });
 
   readonly #state = rxState<TodoState>(({ set, connect, select }) => {
     set({ filter: 'all' });
@@ -46,6 +63,8 @@ export class TodoService {
       map((filter) => ({ filter }))
     );
     const create$ = this.actions.create$.pipe(
+      filter(({ text }) => text.trim().length > 0),
+      tap(({ callback }) => callback()),
       exhaustMap((todo) => this.#todoResource.create(todo)),
       map((todos) => ({ todos }))
     );

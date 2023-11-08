@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RxLet } from '@rx-angular/template/let';
-import { TodoService } from './todo-list.state.service';
+import { TodoService } from './todo-list.service';
 import { TodoComponent } from './todo.component';
 
 @Component({
@@ -29,7 +29,7 @@ import { TodoComponent } from './todo.component';
         class="new-todo"
         placeholder="What needs to be done?"
         [formControl]="input"
-        (keyup.enter)="addTodo()"
+        (keyup.enter)="todoService.actions.create({ text: $event, callback: resetInput })"
       />
     </header>
     <section class="main">
@@ -109,14 +109,5 @@ export class TodoListComponent {
 
   readonly input = new FormControl('');
   readonly todoService = inject(TodoService);
-
-  addTodo(): void {
-    const text = (this.input.value ?? '').trim();
-    if (text.length === 0) {
-      return;
-    }
-
-    this.todoService.actions.create({ text });
-    this.input.reset();
-  }
+  readonly resetInput = () => this.input.reset();
 }

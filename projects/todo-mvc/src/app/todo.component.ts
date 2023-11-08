@@ -25,8 +25,8 @@ interface Actions {
 }
 
 interface Transforms {
-  toggleDone: (e: Event) => boolean;
-  updateText: (e: Event | string) => string;
+  toggleDone: typeof eventChecked;
+  updateText: typeof eventValue;
 }
 
 interface State {
