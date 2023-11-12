@@ -56,6 +56,8 @@ import { TodoComponent } from './todo.component';
             (update)="todoService.actions.update($event)"
             (remove)="todoService.actions.remove($event)"
           />
+        } @empty {
+          <div class="no-todo">Nothing to see.</div>
         }
       </section>
     </section>
