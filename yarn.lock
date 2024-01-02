@@ -2418,6 +2418,19 @@
   resolved "https://registry.npmjs.org/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
+"@tanstack/angular-query-experimental@^5.17.0":
+  version "5.17.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/angular-query-experimental/-/angular-query-experimental-5.17.0.tgz#b8e118f655358200b89f273f30e9c2f54131d47a"
+  integrity sha512-vcPqrJGhoMqWKVTtF7BPW6ZkRe+Lra06wkbbO/dU9+dY6Dwrt33DUw1V3437L7y5SEXDfzqY7AMCW9pHsckIsg==
+  dependencies:
+    "@tanstack/query-core" "5.17.0"
+    tslib "^2.6.2"
+
+"@tanstack/query-core@5.17.0":
+  version "5.17.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.17.0.tgz#3fd41e8557de9904c76e92b3820f62407223c990"
+  integrity sha512-LoBaPtbMY26kRS+ohII4thTsWkJJsXKGitOLikTo2aqPA4yy7cfFJITs8DRnuERT7tLF5xfG9Lnm33Vp/38Vmw==
+
 "@tootallnate/once@2":
   version "2.0.0"
   resolved "https://registry.npmjs.org/@tootallnate/once/-/once-2.0.0.tgz"
@@ -8494,7 +8507,7 @@ tsconfig-paths@^4.1.2:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@2.6.2, tslib@^2.4.0:
+tslib@2.6.2, tslib@^2.4.0, tslib@^2.6.2:
   version "2.6.2"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
   integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==

@@ -3,13 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { rxState } from '@rx-angular/state';
 import { eventValue, rxActions } from '@rx-angular/state/actions';
 import { merge, MonoTypeOperatorFunction } from 'rxjs';
-import {
-  exhaustMap,
-  filter,
-  map,
-  tap,
-  withLatestFrom,
-} from 'rxjs/operators';
+import { exhaustMap, filter, map, tap, withLatestFrom } from 'rxjs/operators';
 import { Todo, TodoFilter } from './todo.model';
 import { TodoResource } from './todo.resource';
 
@@ -56,30 +50,29 @@ export class TodoService {
   readonly #state = rxState<TodoState>(({ set, connect, select }) => {
     set({ filter: 'all' });
 
-    const getAll$ = this.#todoResource
-      .getAll()
-      .pipe(map((todos) => ({ todos })));
+    connect('todos', this.#todoResource.allTodos.data);
+
     const setFilter$ = this.actions.setFilter$.pipe(
       map((filter) => ({ filter }))
     );
     const create$ = this.actions.create$.pipe(
       filter(({ text }) => text.trim().length > 0),
       tap(({ callback }) => callback()),
-      exhaustMap((todo) => this.#todoResource.create(todo)),
+      exhaustMap((todo) => this.#todoResource.addOne.mutateAsync(todo)),
       map((todos) => ({ todos }))
     );
     const remove$ = this.actions.remove$.pipe(
-      exhaustMap((todo) => this.#todoResource.removeOne(todo)),
+      exhaustMap((todo) => this.#todoResource.removeOne.mutateAsync(todo)),
       map((todos) => ({ todos }))
     );
     const update$ = this.actions.update$.pipe(
-      exhaustMap((todo) => this.#todoResource.updateOne(todo)),
+      exhaustMap((todo) => this.#todoResource.updateOne.mutateAsync(todo)),
       map((todos) => ({ todos }))
     );
     const toggleAll$ = this.actions.toggleAll$.pipe(
       withLatestFrom(select('todos')),
       exhaustMap(([, todos]) =>
-        this.#todoResource.updateMany(
+        this.#todoResource.updateMany.mutateAsync(
           todos.map((todo) => ({
             ...todo,
             done: todos.every(({ done }) => !done),
@@ -90,7 +83,9 @@ export class TodoService {
     );
     const clearCompleted$ = this.actions.clearCompleted$.pipe(
       withLatestFrom(select('todos').pipe(activeTodos)),
-      exhaustMap(([, todos]) => this.#todoResource.updateMany(todos)),
+      exhaustMap(([, todos]) =>
+        this.#todoResource.updateMany.mutateAsync(todos)
+      ),
       map((todos) => ({ todos }))
     );
     const drop$ = this.actions.drop$.pipe(
@@ -102,13 +97,12 @@ export class TodoService {
         updatedTodos.splice(currentIndex, 0, todo);
         return updatedTodos;
       }),
-      exhaustMap((todos) => this.#todoResource.updateMany(todos)),
+      exhaustMap((todos) => this.#todoResource.updateMany.mutateAsync(todos)),
       map((todos) => ({ todos }))
     );
 
     connect(
       merge(
-        getAll$,
         setFilter$,
         create$,
         remove$,

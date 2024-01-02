@@ -1,6 +1,11 @@
-import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { Todo } from "./todo.model";
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
+import { lastValueFrom } from 'rxjs';
+import { Todo } from './todo.model';
 
 @Injectable({ providedIn: 'root' })
 export class TodoResource {
@@ -8,23 +13,33 @@ export class TodoResource {
 
   private static endpoint = new URL('http://localhost:3000/todo').toString();
 
-  getAll() {
-    return this.#http.get<Todo[]>(TodoResource.endpoint);
-  }
+  allTodos = injectQuery(() => ({
+    queryKey: ['todos'],
+    initialData: [],
+    queryFn: () => lastValueFrom(this.#http.get<Todo[]>(TodoResource.endpoint)),
+  }));
 
-  create(todo: Pick<Todo, 'text'>) {
-    return this.#http.post<Todo[]>(TodoResource.endpoint, todo);
-  }
+  addOne = injectMutation(() => ({
+    mutationFn: (todo: Pick<Todo, 'text'>) =>
+      lastValueFrom(this.#http.post<Todo[]>(TodoResource.endpoint, todo)),
+  }));
 
-  removeOne(todo: Pick<Todo, 'id'>) {
-    return this.#http.delete<Todo[]>(`${TodoResource.endpoint}/${todo.id}`);
-  }
+  removeOne = injectMutation(() => ({
+    mutationFn: (todo: Pick<Todo, 'id'>) =>
+      lastValueFrom(
+        this.#http.delete<Todo[]>(`${TodoResource.endpoint}/${todo.id}`)
+      ),
+  }));
 
-  updateOne(todo: Todo) {
-    return this.#http.put<Todo[]>(`${TodoResource.endpoint}/${todo.id}`, todo);
-  }
+  updateOne = injectMutation(() => ({
+    mutationFn: (todo: Todo) =>
+      lastValueFrom(
+        this.#http.put<Todo[]>(`${TodoResource.endpoint}/${todo.id}`, todo)
+      ),
+  }));
 
-  updateMany(todos: Todo[]) {
-    return this.#http.put<Todo[]>(TodoResource.endpoint, todos);
-  }
+  updateMany = injectMutation(() => ({
+    mutationFn: (todos: Todo[]) =>
+      lastValueFrom(this.#http.put<Todo[]>(`${TodoResource.endpoint}`, todos)),
+  }));
 }

@@ -21,6 +21,7 @@
     "@rx-angular/cdk": "17.0.0",
     "@rx-angular/state": "17.0.0",
     "@rx-angular/template": "17.0.0",
+    "@tanstack/angular-query-experimental": "^5.17.0",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "rxjs": "~7.4.0",
