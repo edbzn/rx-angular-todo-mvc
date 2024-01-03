@@ -22,6 +22,7 @@ export class TodoResource {
   addOne = injectMutation(() => ({
     mutationFn: (todo: Pick<Todo, 'text'>) =>
       lastValueFrom(this.#http.post<Todo[]>(TodoResource.endpoint, todo)),
+    retry: 5,
   }));
 
   removeOne = injectMutation(() => ({
@@ -29,6 +30,7 @@ export class TodoResource {
       lastValueFrom(
         this.#http.delete<Todo[]>(`${TodoResource.endpoint}/${todo.id}`)
       ),
+    retry: 5,
   }));
 
   updateOne = injectMutation(() => ({
@@ -36,10 +38,12 @@ export class TodoResource {
       lastValueFrom(
         this.#http.put<Todo[]>(`${TodoResource.endpoint}/${todo.id}`, todo)
       ),
+    retry: 5,
   }));
 
   updateMany = injectMutation(() => ({
     mutationFn: (todos: Todo[]) =>
       lastValueFrom(this.#http.put<Todo[]>(`${TodoResource.endpoint}`, todos)),
+    retry: 5,
   }));
 }
