@@ -11,17 +11,16 @@ import { TodoService } from './todo-list.service';
 import { TodoComponent } from './todo.component';
 
 @Component({
-  standalone: true,
-  selector: 'app-todo-list',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RxLet, TodoComponent, CdkDropList, CdkDrag],
-  providers: [TodoService],
-  styles: `
+    selector: 'app-todo-list',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [ReactiveFormsModule, RxLet, TodoComponent, CdkDropList, CdkDrag],
+    providers: [TodoService],
+    styles: `
       :host {
         display: block;
       }
     `,
-  template: `
+    template: `
     <header class="header">
       <h1>Todo</h1>
       <input
@@ -104,7 +103,7 @@ import { TodoComponent } from './todo.component';
         Clear completed
       </button>
     </footer>
-  `,
+  `
 })
 export class TodoListComponent {
   @HostBinding('class.todo-app') readonly todoApp = true;

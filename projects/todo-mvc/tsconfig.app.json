@@ -10,6 +10,7 @@
   "include": ["src/**/*.d.ts"],
   "angularCompilerOptions": {
     "strictTemplates": true,
-    "strictInjectionParameters": true
+    "strictInjectionParameters": true,
+    "strictStandalone": true
   }
 }

@@ -1,5 +1,5 @@
-import {} from '@angular/common/http';
-import { NgZone, importProvidersFrom, ɵNoopNgZone } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import {
   QueryClient,
@@ -9,8 +9,8 @@ import { AppComponent } from './app/app.component';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    { provide: NgZone, useClass: ɵNoopNgZone },
-    importProvidersFrom(HttpClientModule),
+    provideExperimentalZonelessChangeDetection(),
+    provideHttpClient(),
     provideAngularQuery(new QueryClient()),
   ],
 }).catch((err) => console.error(err));
