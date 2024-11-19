@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import {} from '@angular/common/http';
 import { NgZone, importProvidersFrom, ɵNoopNgZone } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import {

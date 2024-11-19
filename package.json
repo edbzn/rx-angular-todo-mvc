@@ -12,12 +12,12 @@
   "private": true,
   "dependencies": {
     "@angular/cdk": "^17.0.0",
-    "@angular/common": "^17.0.8",
-    "@angular/compiler": "^17.0.8",
-    "@angular/core": "^17.0.8",
-    "@angular/forms": "^17.0.8",
-    "@angular/platform-browser": "^17.0.8",
-    "@angular/ssr": "^17.0.8",
+    "@angular/common": "^18.2.12",
+    "@angular/compiler": "^18.2.12",
+    "@angular/core": "^18.2.12",
+    "@angular/forms": "^18.2.12",
+    "@angular/platform-browser": "^18.2.12",
+    "@angular/ssr": "^18.2.12",
     "@rx-angular/cdk": "17.0.0",
     "@rx-angular/state": "17.0.0",
     "@rx-angular/template": "17.0.0",
@@ -28,14 +28,14 @@
     "tslib": "^2.5.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "17.0.8",
     "@angular-eslint/builder": "16.2.0",
     "@angular-eslint/eslint-plugin": "16.2.0",
     "@angular-eslint/eslint-plugin-template": "16.2.0",
     "@angular-eslint/schematics": "16.2.0",
     "@angular-eslint/template-parser": "16.2.0",
-    "@angular/cli": "^17.0.8",
-    "@angular/compiler-cli": "^17.0.8",
+    "@angular/build": "^18.2.12",
+    "@angular/cli": "^18.2.12",
+    "@angular/compiler-cli": "^18.2.12",
     "@push-based/user-flow": "^0.20.1",
     "@rx-angular/eslint-plugin": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "5.62.0",
@@ -44,7 +44,7 @@
     "eslint": "^8.49.0",
     "nodemon": "^2.0.22",
     "ts-node": "~8.3.0",
-    "typescript": "~5.2.2"
+    "typescript": "~5.5.4"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
