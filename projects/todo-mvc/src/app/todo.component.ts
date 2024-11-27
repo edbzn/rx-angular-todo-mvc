@@ -4,10 +4,10 @@ import {
   Component,
   ElementRef,
   Input,
-  Output,
   inject,
   viewChild,
 } from '@angular/core';
+import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
 import { rxState } from '@rx-angular/state';
 import { eventValue, rxActions } from '@rx-angular/state/actions';
@@ -53,24 +53,24 @@ const eventChecked = (e: Event): boolean => {
   `,
   template: `
     @if (isEditing) {
-      <input
-        #input
-        class="edit"
-        [value]="todo.text"
-        (blur)="actions.updateText($event)"
-        (keyup.enter)="actions.updateText($event)"
-      />
+    <input
+      #input
+      class="edit"
+      [value]="todo.text"
+      (blur)="actions.updateText($event)"
+      (keyup.enter)="actions.updateText($event)"
+    />
     } @else {
-      <div class="view">
-        <input
-          class="toggle"
-          type="checkbox"
-          [checked]="todo.done"
-          (input)="actions.toggleDone($event)"
-        />
-        <label (dblclick)="actions.edit()">{{ todo.text }}</label>
-        <button class="destroy" (click)="actions.remove(todo)"></button>
-      </div>
+    <div class="view">
+      <input
+        class="toggle"
+        type="checkbox"
+        [checked]="todo.done"
+        (input)="actions.toggleDone($event)"
+      />
+      <label (dblclick)="actions.edit()">{{ todo.text }}</label>
+      <button class="destroy" (click)="actions.remove(todo)"></button>
+    </div>
     }
   `,
 })
@@ -83,6 +83,13 @@ export class TodoComponent {
       toggleDone: eventChecked,
       updateText: eventValue,
     })
+  );
+
+  readonly remove = outputFromObservable(this.actions.remove$);
+  readonly update = outputFromObservable(
+    merge(this.actions.toggleDone$, this.actions.updateText$).pipe(
+      switchMap(() => this.state.select('todo').pipe(take(1)))
+    )
   );
 
   private readonly state = rxState<State>(({ set, connect }) => {
@@ -115,12 +122,6 @@ export class TodoComponent {
   get isEditing(): boolean {
     return this.state.get('isEditing');
   }
-
-  @Output() remove = this.actions.remove$;
-  @Output() update = merge(
-    this.actions.toggleDone$,
-    this.actions.updateText$
-  ).pipe(switchMap(() => this.state.select('todo').pipe(take(1))));
 
   constructor() {
     rxEffects(({ register }) => {
