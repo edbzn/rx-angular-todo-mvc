@@ -8,6 +8,7 @@ import {
   Output,
   ViewChild,
   inject,
+  viewChild,
 } from '@angular/core';
 import { RxStrategyProvider } from '@rx-angular/cdk/render-strategies';
 import { rxState } from '@rx-angular/state';
@@ -97,7 +98,7 @@ export class TodoComponent {
     connect('isEditing', this.actions.edit$, () => true);
   });
 
-  @ViewChild('input') input?: ElementRef<HTMLInputElement>;
+  private input = viewChild.required<ElementRef<HTMLInputElement>>('input');
 
   @HostBinding('class.todo') readonly hostClass = true;
   @HostBinding('class.completed') get completed(): boolean {
@@ -135,8 +136,8 @@ export class TodoComponent {
           this.cd.detectChanges();
 
           if (isEditing) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @rx-angular/prefer-no-layout-sensitive-apis
-            this.input!.nativeElement.focus();
+            // eslint-disable-next-line @rx-angular/prefer-no-layout-sensitive-apis
+            this.input().nativeElement.focus();
           }
         })
       );
