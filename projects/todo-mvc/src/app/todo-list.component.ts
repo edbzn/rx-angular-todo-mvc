@@ -2,7 +2,6 @@ import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import {
   ChangeDetectionStrategy,
   Component,
-  HostBinding,
   inject,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -15,6 +14,9 @@ import { TodoComponent } from './todo.component';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ReactiveFormsModule, RxLet, TodoComponent, CdkDropList, CdkDrag],
     providers: [TodoService],
+    host: {
+      class: 'todo-app',
+    },
     styles: `
       :host {
         display: block;
@@ -106,8 +108,6 @@ import { TodoComponent } from './todo.component';
   `
 })
 export class TodoListComponent {
-  @HostBinding('class.todo-app') readonly todoApp = true;
-
   readonly input = new FormControl('');
   readonly todoService = inject(TodoService);
   readonly resetInput = () => this.input.reset();

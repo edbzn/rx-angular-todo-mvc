@@ -3,10 +3,8 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  HostBinding,
   Input,
   Output,
-  ViewChild,
   inject,
   viewChild,
 } from '@angular/core';
