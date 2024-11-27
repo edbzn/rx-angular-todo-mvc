@@ -43,6 +43,11 @@ const eventChecked = (e: Event): boolean => {
   standalone: true,
   selector: 'app-todo',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'todo',
+    '[class.completed]': 'todo.done',
+    '[class.editing]': 'isEditing',
+  },
   styles: `
       :host {
         display: block;
@@ -99,14 +104,6 @@ export class TodoComponent {
   });
 
   private input = viewChild.required<ElementRef<HTMLInputElement>>('input');
-
-  @HostBinding('class.todo') readonly hostClass = true;
-  @HostBinding('class.completed') get completed(): boolean {
-    return this.todo.done;
-  }
-  @HostBinding('class.editing') get editing(): boolean {
-    return this.isEditing;
-  }
 
   @Input({ required: true })
   set todo(todo: Todo) {
